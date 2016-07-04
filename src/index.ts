@@ -76,4 +76,10 @@ export class Collection {
       return null;
     }
   }
+
+  slice(start: number, size?: number): Collection {
+    const end = (size === undefined) ? undefined : start + size;
+    const newItems = Array.prototype.slice.call(this._items, start, end);
+    return new Collection(newItems);
+  }
 }

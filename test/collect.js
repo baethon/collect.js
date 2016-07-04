@@ -156,4 +156,22 @@ describe('collect test suite', () => {
       assertCollectionItems(collection, [1, 2, 3]);
     });
   });
+  
+  describe('slice() method', () => {
+    const collection = collect(['foo', 'bar', 'baz']);
+    const cases = [
+      {start: 0, size: 1, expected: ['foo']},
+      {start: 1, size: 2, expected: ['bar', 'baz']},
+      {start: 2, size: undefined, expected: ['baz']},
+    ];
+
+    cases.forEach((testCase, index) => {
+      const {start, size, expected} = testCase;
+
+      it(`test case #${index+1}: ${JSON.stringify(testCase)}`, () => {
+        const newCollection = collection.slice(...[start, size]);
+        assert.deepEqual(newCollection.getAll(), expected);
+      });
+    });
+  });
 });
