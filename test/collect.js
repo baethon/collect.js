@@ -174,4 +174,33 @@ describe('collect test suite', () => {
       });
     });
   });
+
+  describe('extending via macros', () => {
+    it('return new collection if macro returns array', () => {
+      Collection.macro('assert', function (assert, instance) {
+        assert.strictEqual(this, instance);
+
+        return [1, 2, 3];
+      });
+
+      const collection = collect([]);
+      const newCollection = collection.assert(assert, collection);
+
+      assert.notStrictEqual(collection, newCollection);
+      assert.notDeepEqual(collection.getAll(), newCollection.getAll());
+      assert.deepEqual(newCollection.getAll(), [1, 2, 3]);
+
+      delete Collection.prototype.assert;
+    });
+
+    it('returns non-array values', () => {
+      Collection.macro('assert', function () {
+        return 42;
+      });
+
+      assert.equal(collect([]).assert(), 42);
+
+      delete Collection.prototype.assert;
+    });
+  });
 });
