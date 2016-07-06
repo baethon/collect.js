@@ -193,4 +193,20 @@ export class Collection {
 
     return new Collection(combined);
   }
+
+	/**
+   * Retrieves all of the collection values for a given key:
+   * 
+   * ```js
+   * collect([{name: 'Jon'}, {name: 'Arya'}]).pluck('name');
+   * // Collection of ['Jon', 'Arya']
+   * ```
+   * 
+   * @param keyName
+   * @returns {Collection}
+   */
+  pluck(keyName: string): Collection {
+    const items = this._items.map(item => item[keyName]);
+    return new Collection(items);
+  }
 }

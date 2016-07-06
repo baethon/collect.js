@@ -8,4 +8,7 @@ export default {
     {collection: collect(['name', 'age']), args: [['Jon', 16]], expected: {name: 'Jon', age: 16}},
     {collection: collect(['name', 'age']), args: [collect(['Jon', 16])], expected: {name: 'Jon', age: 16}},
   ],
+  pluck: [
+    {collection: collect([{name: 'Jon'}, {name: 'Arya'}]), args: ['name'], expected: ['Jon', 'Arya']},
+  ],
 };
