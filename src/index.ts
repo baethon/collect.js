@@ -297,4 +297,28 @@ export class Collection {
 
     return new Collection(newCollection);
   }
+
+	/**
+   * Iterates through the collection and passes each value to the given callback.
+   * The callback is free to modify the item and return it,
+   * thus forming a new collection of modified items.
+   * 
+   * Then, the array is flattened by a level:
+   *
+   * ```js
+   * const people = collect([
+   *    {name: 'Jon', titles: ['King of the North', 'Knower of nothing']},
+   *    {name: 'Arya', titles: ['Little assasin']}
+   * ]);
+   *
+   * const titles = people.flatMap(person => person.titles);
+   * // Collection of ['King of the North', 'Knower of nothing', 'Little assasin']
+   * ```
+   * 
+   * @param callback
+   * @returns {Collection}
+   */
+  flatMap(callback: ArrayCallback<any>): Collection {
+    return this.map(callback).collapse();
+  }
 }

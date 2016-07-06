@@ -18,4 +18,11 @@ export default {
       expected: {productId: 1, name: 'Desk'},
     },
   ],
+  flatMap: [
+    {
+      collection: collect([{skills: ['c++', 'php']}, {skills: ['java', 'c#']}]),
+      args: [row => row.skills],
+      expected: ['c++', 'php', 'java', 'c#'],
+    },
+  ],
 };
