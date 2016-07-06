@@ -2,7 +2,7 @@ import {describe, it} from 'mocha';
 import assert from 'assert';
 import {Collection} from '../../lib';
 
-function runTestCase(methodName, {collection, args, expected}, index) {
+function runTestCase(methodName, {collection, args = [], expected}, index) {
   it(`test case #${index + 1}: ${JSON.stringify(args)}`, () => {
     const result = collection[methodName](...args);
 

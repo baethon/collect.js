@@ -83,7 +83,7 @@ export class Collection {
     return new Collection(newItems);
   }
 
-	/**
+  /**
    * Return average value of all items in collection
    *
    * ```js
@@ -116,5 +116,18 @@ export class Collection {
 
     const sum = items.reduce((sum, current) => sum + current, 0);
     return sum / items.length;
+  }
+
+  /**
+   * Collapse array of collections into flat collection
+   *
+   * ```js
+   * collect([[1, 2], [3, 4]]).collapse();
+   * // Collection of [1, 2, 3, 4]
+   * ```
+   */
+  collapse(): Collection {
+    const items = this.getAll().reduce((flatArray, current) => flatArray.concat(current), []);
+    return new Collection(items);
   }
 }

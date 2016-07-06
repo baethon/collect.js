@@ -111,6 +111,13 @@ describe('Collection', () => {
 });
 
 describe('Collection test suites', () => {
-  runSuite(require('./suites/core').default);
-  runSuite(require('./suites/aggregates').default);
+  const suites = [
+    './suites/core',
+    './suites/aggregates',
+    './suites/transformations',
+  ];
+
+  suites.forEach(path => {
+    runSuite(require(path).default);
+  });
 });
