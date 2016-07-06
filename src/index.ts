@@ -273,4 +273,28 @@ export class Collection {
   count(): number {
     return this._items.length;
   }
+
+	/**
+   * Returns all items in the collection except for those with the specified keys:
+   *
+   * ```js
+   * const collection = collect({productId: 1, name: 'Desk', price: 100, discount: false});
+   * const filtered = collection.except(['price', 'discount']);
+   * filtered.all();
+   * // Collection of {productId: 1, name: 'Desk'}
+   * ```
+   *
+   * @param keys
+   * @returns {Collection}
+   */
+  except(keys: string[]): Collection {
+    const newCollection = {};
+    this.keys()
+      .reject(name => keys.indexOf(name) >= 0)
+      .forEach(name => Object.assign(newCollection, {
+        [name]: this._items[name],
+      }));
+
+    return new Collection(newCollection);
+  }
 }

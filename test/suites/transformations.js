@@ -11,4 +11,11 @@ export default {
   pluck: [
     {collection: collect([{name: 'Jon'}, {name: 'Arya'}]), args: ['name'], expected: ['Jon', 'Arya']},
   ],
+  except: [
+    {
+      collection: collect({productId: 1, name: 'Desk', price: 100, discount: false}),
+      args: [['price', 'discount']],
+      expected: {productId: 1, name: 'Desk'},
+    },
+  ],
 };
