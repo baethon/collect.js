@@ -39,14 +39,23 @@ describe('Collection', () => {
     assert.notStrictEqual(collection.getAll(), items);
   });
 
-  it('allows to set arrays only', () => {
+  it('allows to set arrays, objects or other collections', () => {
     assert.throws(() => collect(null), Error);
+    assert.throws(() => collect(123), Error);
+    assert.throws(() => collect('123'), Error);
+    assert.throws(() => collect(() => {}), Error);
+    assert.doesNotThrow(() => collect([]));
+    assert.doesNotThrow(() => collect({}));
+    assert.doesNotThrow(() => collect(collect([])));
   });
 
   it('returns copy of items', () => {
-    const collection = collect(['foo']);
-
+    let collection = collect(['foo']);
     assert.notStrictEqual(collection.getAll(), collection._items);
+    
+    collection = collect({name: 'Jon'});
+    assert.notStrictEqual(collection.getAll(), collection._items);
+    assertCollectionItems(collection, {name: 'Jon'});
   });
 
   it('can be created from other collection', () => {

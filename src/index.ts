@@ -2,7 +2,9 @@ export function collect(items: any[]): Collection {
   return new Collection(items);
 }
 
-export type CollectionArray = Collection|any[];
+const isArrayable = (value: any) => value instanceof Collection || Array.isArray(value);
+const toArray = (value: any)=> value instanceof Collection ? value.getAll() : Array.from(value);
+const isObject = (value: any) => Object.prototype.toString.call(value) === '[object Object]';
 
 export interface ArrayCallback<T> {
   (currentValue: any, index?: number, array?: any[]): T;
@@ -11,32 +13,65 @@ export interface ArrayCallback<T> {
 export class Collection {
   private _items: any[];
 
-  constructor(items: CollectionArray) {
-    if (items instanceof Collection) {
-      items = (<Collection>items).getAll();
-    }
+  constructor(items: any) {
+    const arrayable = isArrayable(items);
 
-    if (!Array.isArray(items)) {
+    if (!arrayable && !isObject(items)) {
       throw new Error('Passed items are not valid array');
     }
 
-    this._items = Array.from(<any[]>items);
+    if (arrayable) {
+      items = toArray(items);
+    }
+
+    this._items = items;
   }
 
-  getAll(): any[] {
-    return this._items.slice();
+  getAll(): any[]|Object {
+    if (Array.isArray(this._items)) {
+      return this._items.slice();
+    }
+
+    return Object.assign({}, this._items);
   }
 
   get items() {
     return this.getAll();
   }
 
-  merge(items: CollectionArray): Collection {
-    if (items instanceof Collection) {
-      items = (<Collection>items).getAll();
+	/**
+   * Returns all of the collection keys
+   *
+   * @returns {Collection}
+   */
+  keys(): Collection {
+    return new Collection(Object.keys(this._items));
+  }
+
+	/**
+   * Returns all values of collection
+   * 
+   * ```js
+   * collect({name: 'Jon'}).values();
+   * // Collection of ['Jon']
+   * 
+   * collect([1, 2, 3]).values();
+   * // Collection of [1, 2, 3]
+   * ```
+   * 
+   * @returns {Collection}
+   */
+  values(): Collection {
+    if (Array.isArray(this._items)) {
+      return new Collection(this._items);
     }
 
-    return new Collection(this._items.concat(items));
+    const values = Object.keys(this._items).map(key => this._items[key]);
+    return new Collection(values);
+  }
+
+  merge(items: Collection|any[]): Collection {
+    return new Collection(this._items.concat(toArray(items)));
   }
 
   forEach(callback: ArrayCallback<void>): void {
@@ -63,7 +98,7 @@ export class Collection {
     );
   }
 
-  ifEmpty(callback: () => CollectionArray): Collection {
+  ifEmpty(callback: () => any): Collection {
     if (this._items.length) {
       return this;
     }
@@ -108,10 +143,10 @@ export class Collection {
    * @returns {number}
    */
   avg(keyName?: string): number {
-    let items = this.getAll();
+    let items = <any[]>this.getAll();
 
     if (keyName) {
-      items = this.getAll().map(item => item[keyName]);
+      items = items.map(item => item[keyName]);
     }
 
     const sum = items.reduce((sum, current) => sum + current, 0);
@@ -127,7 +162,7 @@ export class Collection {
    * ```
    */
   collapse(): Collection {
-    const items = this.getAll().reduce((flatArray, current) => flatArray.concat(current), []);
+    const items = (<any[]>this.getAll()).reduce((flatArray, current) => flatArray.concat(current), []);
     return new Collection(items);
   }
 }

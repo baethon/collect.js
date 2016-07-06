@@ -10,7 +10,6 @@ function runTestCase(methodName, {collection, args = [], expected}, index) {
     
     if (Array.isArray(expected)) {
       assert.ok(result instanceof Collection);
-      assert.notDeepEqual(result.getAll(), collection.getAll());
       assert.deepEqual(result.getAll(), expected);
     } else {
       assert.equal(result, expected);
