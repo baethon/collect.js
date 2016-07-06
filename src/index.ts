@@ -1,4 +1,4 @@
-export function collect(items: any[]): Collection {
+export function collect(items: any): Collection {
   return new Collection(items);
 }
 
@@ -194,19 +194,79 @@ export class Collection {
     return new Collection(combined);
   }
 
-	/**
+  /**
    * Retrieves all of the collection values for a given key:
-   * 
+   *
    * ```js
    * collect([{name: 'Jon'}, {name: 'Arya'}]).pluck('name');
    * // Collection of ['Jon', 'Arya']
    * ```
-   * 
+   *
    * @param keyName
    * @returns {Collection}
    */
   pluck(keyName: string): Collection {
     const items = this._items.map(item => item[keyName]);
     return new Collection(items);
+  }
+
+  /**
+   * Determines whether the collection contains a given item:
+   *
+   * ```js
+   * collect({name: 'Jon'}).contains('Jon');
+   * // true
+   *
+   * collect({name: 'Jon'}).contains('Arrya');
+   * // false
+   * ```
+   *
+   * It's possible to pass a key / value pair to the contains method,
+   * which will determine if the given pair exists in the collection:
+   *
+   * ```js
+   * const collection = collect([
+   *   {name: 'Jon', lastname: 'Snow'},
+   *   {name: 'Arya', lastname: 'Stark'},
+   * ]);
+   *
+   * collection.contains('lastname', 'Stark');
+   * // true
+   * ```
+   *
+   * Also it's possible to pass own callback to perform truth test:
+   *
+   * ```js
+   * collection([1, 2, 3]).contains(i => i >= 3);
+   * // true
+   * ```
+   *
+   * Arguments passed to callback are the same as in Array.some method.
+   *
+   * @param predicate
+   * @param value
+   * @returns {boolean}
+   */
+  contains(predicate: string, value: any): boolean;
+  contains(predicate: ArrayCallback<boolean>, value: any): boolean;
+  contains(predicate: any, value?: any): boolean {
+    let items = <any[]>this.getAll();
+
+    if (value === undefined) {
+      value = predicate;
+      predicate = undefined;
+    }
+
+    if (typeof predicate === 'string') {
+      items = <any[]>this.pluck(predicate).getAll();
+    } else if (isObject(this._items)) {
+      items = <any[]>this.values().getAll();
+    }
+
+    if (typeof predicate !== 'function') {
+      predicate = (currentValue: any): boolean => currentValue === value;
+    }
+
+    return items.some(predicate);
   }
 }
