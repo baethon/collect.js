@@ -29,7 +29,7 @@ const assertArrayCallbacks = {
   }
 }
 
-describe('collect test suite', () => {
+describe('Collection', () => {
   it('returns collection instance', () => {
     const items = ['foo', 'bar'];
     const collection = collect(items);
@@ -68,8 +68,6 @@ describe('collect test suite', () => {
     assertArrayCallbacks.passing('forEach');
     assertArrayCallbacks.preventFromModifying('forEach');
   });
-
-  runSuite(require('./suites/core').default);
 
   describe('map() callback arguments', () => {
     assertArrayCallbacks.passing('map');
@@ -110,4 +108,9 @@ describe('collect test suite', () => {
       assertCollectionItems(collection, [1, 2, 3]);
     });
   });
+});
+
+describe('Collection test suites', () => {
+  runSuite(require('./suites/core').default);
+  runSuite(require('./suites/aggregates').default);
 });

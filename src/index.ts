@@ -82,4 +82,39 @@ export class Collection {
     const newItems = Array.prototype.slice.call(this._items, start, end);
     return new Collection(newItems);
   }
+
+	/**
+   * Return average value of all items in collection
+   *
+   * ```js
+   * collect([1, 2, 3]).avg();
+   * // 2
+   * ```
+   *
+   * If the collection contains nested objects, keyName is required
+   * to use for determining which values to calculate the average:
+   *
+   * ```js
+   * const collection = collect([
+   *   {name: 'JavaScript: The Good Parts', pages: 176},
+   *   {name: 'JavaScript: The Definitive Guide', pages: 1096},
+   * ]);
+   *
+   * collection.avg('pages');
+   * // 636
+   * ```
+   *
+   * @param keyName
+   * @returns {number}
+   */
+  avg(keyName?: string): number {
+    let items = this.getAll();
+
+    if (keyName) {
+      items = this.getAll().map(item => item[keyName]);
+    }
+
+    const sum = items.reduce((sum, current) => sum + current, 0);
+    return sum / items.length;
+  }
 }
