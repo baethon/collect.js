@@ -13,6 +13,7 @@ function runTestCase(methodName, {collection, args = [], expected}, index) {
     if (Array.isArray(expected) || isObject(expected)) {
       assert.ok(result instanceof Collection);
       assert.deepEqual(result.getAll(), expected);
+      assert.notDeepEqual(result.getAll(), collection.getAll());
     } else {
       assert.equal(result, expected);
     }

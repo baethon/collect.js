@@ -30,7 +30,6 @@ export default {
     {collection: collect({name: 'Jon', age: 16}), expected: ['name', 'age']},
   ],
   values: [
-    {collection, expected: [1, 2, 3]},
     {collection: collect({name: 'Jon', age: 16}), expected: ['Jon', 16]},
   ],
 };

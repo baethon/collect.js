@@ -117,6 +117,11 @@ describe('Collection', () => {
       assertCollectionItems(collection, [1, 2, 3]);
     });
   });
+
+  it('retuns values of an array', () => {
+    const collection = collect([1, 2, 3]);
+    assert.deepEqual(collection.values().getAll(), [1, 2, 3]);
+  });
 });
 
 describe('Collection test suites', () => {
