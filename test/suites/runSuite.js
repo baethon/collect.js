@@ -2,13 +2,15 @@ import {describe, it} from 'mocha';
 import assert from 'assert';
 import {Collection} from '../../lib';
 
+const isObject = value => Object.prototype.toString.call(value) === '[object Object]';
+
 function runTestCase(methodName, {collection, args = [], expected}, index) {
   it(`test case #${index + 1}: ${JSON.stringify(args)}`, () => {
     const result = collection[methodName](...args);
 
     assert.notStrictEqual(result, collection);
     
-    if (Array.isArray(expected)) {
+    if (Array.isArray(expected) || isObject(expected)) {
       assert.ok(result instanceof Collection);
       assert.deepEqual(result.getAll(), expected);
     } else {

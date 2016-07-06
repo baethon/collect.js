@@ -2,9 +2,14 @@ export function collect(items: any[]): Collection {
   return new Collection(items);
 }
 
-const isArrayable = (value: any) => value instanceof Collection || Array.isArray(value);
-const toArray = (value: any)=> value instanceof Collection ? value.getAll() : Array.from(value);
-const isObject = (value: any) => Object.prototype.toString.call(value) === '[object Object]';
+const isArrayable: (value: any) => boolean =
+  value => value instanceof Collection || Array.isArray(value);
+
+const toArray: (value: any) => any[] =
+  value => value instanceof Collection ? <any[]>value.getAll() : Array.from(value);
+
+const isObject: (value: any) => boolean =
+  value => Object.prototype.toString.call(value) === '[object Object]';
 
 export interface ArrayCallback<T> {
   (currentValue: any, index?: number, array?: any[]): T;
@@ -39,7 +44,7 @@ export class Collection {
     return this.getAll();
   }
 
-	/**
+  /**
    * Returns all of the collection keys
    *
    * @returns {Collection}
@@ -48,17 +53,17 @@ export class Collection {
     return new Collection(Object.keys(this._items));
   }
 
-	/**
+  /**
    * Returns all values of collection
-   * 
+   *
    * ```js
    * collect({name: 'Jon'}).values();
    * // Collection of ['Jon']
-   * 
+   *
    * collect([1, 2, 3]).values();
    * // Collection of [1, 2, 3]
    * ```
-   * 
+   *
    * @returns {Collection}
    */
   values(): Collection {
@@ -162,7 +167,30 @@ export class Collection {
    * ```
    */
   collapse(): Collection {
-    const items = (<any[]>this.getAll()).reduce((flatArray, current) => flatArray.concat(current), []);
+    const items = (<any[]>this.getAll())
+      .reduce((flatArray, current) => flatArray.concat(current), []);
+
     return new Collection(items);
+  }
+
+  /**
+   * Combines the keys of the collection with the values of another array or collection
+   *
+   * ```js
+   * collect(['name', 'age']).combine(['Jon', 16]);
+   * // Collection of { name: 'Jon', age: 16 }
+   * ```
+   *
+   * @param values
+   * @returns {Collection}
+   */
+  combine(values: Collection|any[]): Collection {
+    values = toArray(values);
+
+    const combined = this._items.reduce((combined, keyName, index) => Object.assign(combined, {
+      [keyName]: values[index],
+    }), {});
+
+    return new Collection(combined);
   }
 }
