@@ -274,7 +274,7 @@ export class Collection {
     return this._items.length;
   }
 
-	/**
+  /**
    * Returns all items in the collection except for those with the specified keys:
    *
    * ```js
@@ -298,11 +298,11 @@ export class Collection {
     return new Collection(newCollection);
   }
 
-	/**
+  /**
    * Iterates through the collection and passes each value to the given callback.
    * The callback is free to modify the item and return it,
    * thus forming a new collection of modified items.
-   * 
+   *
    * Then, the array is flattened by a level:
    *
    * ```js
@@ -314,11 +314,71 @@ export class Collection {
    * const titles = people.flatMap(person => person.titles);
    * // Collection of ['King of the North', 'Knower of nothing', 'Little assasin']
    * ```
-   * 
+   *
    * @param callback
    * @returns {Collection}
    */
   flatMap(callback: ArrayCallback<any>): Collection {
     return this.map(callback).collapse();
+  }
+
+	/**
+   * Groups the collection's items by a given key:
+   *
+   * ```js
+   * const collection = collect([
+   *    { house: 'Stark', name: 'Jon' },
+   *    { house: 'Stark', name: 'Arrya' },
+   * ]);
+   *
+   * const byHouse = collection.groupBy('house');
+   * // Collection of {
+   * //   Stark: [
+   * //     { house: 'Stark', name: 'Jon' },
+   * //     { house: 'Stark', name: 'Arrya' },
+   * //   ],
+   * // }
+   * ```
+   *
+   * In addition to passing a string `key`, it's possible to pass a callback.
+   * The callback should return the value you wish to key the group by:
+   *
+   * ```js
+   * const collection = collect([
+   *    { house: 'Stark', name: 'Jon' },
+   *    { house: 'Stark', name: 'Arrya' },
+   * ]);
+   *
+   * const byHouse = collection.groupBy(person => person.house.toUpperCase());
+   * // Collection of {
+   * //   STARK: [
+   * //     { house: 'Stark', name: 'Jon' },
+   * //     { house: 'Stark', name: 'Arrya' },
+   * //   ],
+   * // }
+   * ```
+   *
+   * @param key
+   * @returns {Collection}
+   */
+  groupBy(key: string|ArrayCallback<string>): Collection {
+    let keyFactory: ArrayCallback<string>;
+
+    if (typeof key === 'function') {
+      keyFactory = <ArrayCallback<string>>key;
+    } else {
+      keyFactory = current => current[key];
+    }
+
+    const newCollection = this._items.reduce((newCollection, current, index, array) => {
+      const key = keyFactory(current, index, array);
+      const values = newCollection[key] || [];
+
+      return Object.assign({}, newCollection, {
+        [key]: values.concat(current),
+      });
+    }, {});
+
+    return new Collection(newCollection);
   }
 }

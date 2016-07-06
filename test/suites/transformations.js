@@ -25,4 +25,40 @@ export default {
       expected: ['c++', 'php', 'java', 'c#'],
     },
   ],
+  groupBy: [
+    {
+      collection: collect([
+        {accountId: 'account-x10', product: 'Chair'},
+        {accountId: 'account-x10', product: 'Bookcase'},
+        {accountId: 'account-x11', product: 'Desk'},
+      ]),
+      args: ['accountId'],
+      expected: {
+        'account-x10': [
+          {accountId: 'account-x10', product: 'Chair'},
+          {accountId: 'account-x10', product: 'Bookcase'},
+        ],
+        'account-x11': [
+          {accountId: 'account-x11', product: 'Desk'},
+        ],
+      },
+    },
+    {
+      collection: collect([
+        {accountId: 'account-x10', product: 'Chair'},
+        {accountId: 'account-x10', product: 'Bookcase'},
+        {accountId: 'account-x11', product: 'Desk'},
+      ]),
+      args: [current => current.accountId.substr(-3)],
+      expected: {
+        x10: [
+          {accountId: 'account-x10', product: 'Chair'},
+          {accountId: 'account-x10', product: 'Bookcase'},
+        ],
+        x11: [
+          {accountId: 'account-x11', product: 'Desk'},
+        ],
+      },
+    }
+  ],
 };

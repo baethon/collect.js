@@ -11,7 +11,7 @@ function runTestCase(methodName, {collection, args = [], expected}, index) {
     assert.notStrictEqual(result, collection);
     
     if (Array.isArray(expected) || isObject(expected)) {
-      assert.ok(result instanceof Collection);
+      assert.ok(result instanceof Collection, 'Result should be an instance of Collection');
       assert.deepEqual(result.getAll(), expected);
       assert.notDeepEqual(result.getAll(), collection.getAll());
     } else {
