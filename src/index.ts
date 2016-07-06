@@ -269,4 +269,8 @@ export class Collection {
 
     return items.some(predicate);
   }
+
+  count(): number {
+    return this._items.length;
+  }
 }

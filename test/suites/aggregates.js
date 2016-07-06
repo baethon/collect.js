@@ -15,4 +15,7 @@ export default {
     {collection: collect({name: 'Jon'}), args: ['Jon'], expected: true},
     {collection, args: [value => value === 1], expected: false},
   ],
+  count: [
+    {collection, expected: 3},
+  ],
 };
