@@ -322,7 +322,7 @@ export class Collection {
     return this.map(callback).collapse();
   }
 
-	/**
+  /**
    * Groups the collection's items by a given key:
    *
    * ```js
@@ -382,7 +382,7 @@ export class Collection {
     return new Collection(newCollection);
   }
 
-	/**
+  /**
    * Determines if a given key exists in the collection:
    *
    * ```js
@@ -396,7 +396,7 @@ export class Collection {
     return key in this._items;
   }
 
-	/**
+  /**
    * Join the items in a collection.
    *
    * Arguments depend on the type of items in the collection.
@@ -431,5 +431,56 @@ export class Collection {
     const values = key ? this.pluck(key) : this;
 
     return (<any[]>values.getAll()).join(glue);
+  }
+
+  /**
+   * Keys the collection by the given key:
+   *
+   * ```js
+   * let collection = collect([
+   *    {productId: 'prod-100', name: 'desk'},
+   *    {productId: 'prod-200', name: 'table'},
+   * ]);
+   *
+   * collection.keyBy('productId');
+   * // Collection of {
+   * //   'prod-100': {productId: 'prod-100', name: 'desk'},
+   * //   'prod-200': {productId: 'prod-200', name: 'table'},
+   * // }
+   * ```
+   *
+   * If multiple items have the same key, only the last one will appear in the new collection.
+   *
+   * You may also pass your own callback, which should return the value to key the collection by:
+   *
+   * ```js
+   * collection.keyBy(item => item.productId.toUpperCase());
+   * // Collection of {
+   * //   'PROD-100': {productId: 'prod-100', name: 'desk'},
+   * //   'PROD-200': {productId: 'prod-200', name: 'table'},
+   * // }
+   * ```
+   *
+   * @param key
+   * @returns {Collection}
+   */
+  keyBy(key: string|ArrayCallback<string>): Collection {
+    let keyFactory: ArrayCallback<string>;
+
+    if (typeof key === 'function') {
+      keyFactory = <ArrayCallback<string>>key;
+    } else {
+      keyFactory = current => current[key];
+    }
+
+    const newCollection = this._items.reduce((newCollection, current, index, array) => {
+      const key = keyFactory(current, index, array);
+
+      return Object.assign({}, newCollection, {
+        [key]: current,
+      });
+    }, {});
+
+    return new Collection(newCollection);
   }
 }

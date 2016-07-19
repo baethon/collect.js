@@ -76,4 +76,28 @@ export default {
       expected: 'Jon, Arya',
     },
   ],
+  keyBy: [
+    {
+      collection: collect([
+        {accountId: 'account-x10', product: 'Chair'},
+        {accountId: 'account-x11', product: 'Bookcase'},
+      ]),
+      args: ['accountId'],
+      expected: {
+        'account-x10': {accountId: 'account-x10', product: 'Chair'},
+        'account-x11': {accountId: 'account-x11', product: 'Bookcase'},
+      },
+    },
+    {
+      collection: collect([
+        {accountId: 'account-x10', product: 'Chair'},
+        {accountId: 'account-x11', product: 'Bookcase'},
+      ]),
+      args: [item => item.accountId.toUpperCase()],
+      expected: {
+        'ACCOUNT-X10': {accountId: 'account-x10', product: 'Chair'},
+        'ACCOUNT-X11': {accountId: 'account-x11', product: 'Bookcase'},
+      },
+    },
+  ],
 };
