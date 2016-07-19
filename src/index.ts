@@ -381,4 +381,18 @@ export class Collection {
 
     return new Collection(newCollection);
   }
+
+	/**
+   * Determines if a given key exists in the collection:
+   *
+   * ```js
+   * collect({name: 'Jon'}).has('name');
+   * // true
+   * ```
+   *
+   * @param key
+   */
+  has(key: string): boolean {
+    return key in this._items;
+  }
 }

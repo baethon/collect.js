@@ -18,4 +18,8 @@ export default {
   count: [
     {collection, expected: 3},
   ],
+  has: [
+    {collection: collect({name: 'Jon'}), args: ['name'], expected: true},
+    {collection: collect({name: 'Jon'}), args: ['lastname'], expected: false},
+  ],
 };
