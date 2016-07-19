@@ -10,6 +10,7 @@ export default {
   ],
   pluck: [
     {collection: collect([{name: 'Jon'}, {name: 'Arya'}]), args: ['name'], expected: ['Jon', 'Arya']},
+    {collection: collect([{name: 'Jon', house: 'Stark'}]), args: ['name', 'house'], expected: {Stark: 'Jon'}},
   ],
   except: [
     {

@@ -202,11 +202,28 @@ export class Collection {
    * // Collection of ['Jon', 'Arya']
    * ```
    *
+   * You may also specify how you wish the resulting collection to be keyed:
+   *
+   * ```js
+   * collect([{name: 'Jon', house: 'Stark'}]).pluck('name', 'house');
+   * // Collection of {Stark: 'Jon'}
+   * ```
+   *
+   * @param valuesName
    * @param keyName
    * @returns {Collection}
    */
-  pluck(keyName: string): Collection {
-    const items = this._items.map(item => item[keyName]);
+  pluck(valuesName: string, keyName?: string): Collection {
+    let items: any[]|Object;
+
+    if (keyName) {
+      items = this._items.reduce((newCollection, item) => Object.assign({}, newCollection, {
+        [item[keyName]]: item[valuesName],
+      }), {});
+    } else {
+      items = this._items.map(item => item[valuesName]);
+    }
+
     return new Collection(items);
   }
 
