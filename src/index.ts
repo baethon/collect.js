@@ -395,4 +395,41 @@ export class Collection {
   has(key: string): boolean {
     return key in this._items;
   }
+
+	/**
+   * Join the items in a collection.
+   *
+   * Arguments depend on the type of items in the collection.
+   *
+   * If the collection contains array of objects,
+   * you should pass the key of the attributes you wish to join,
+   * and the "glue" string you wish to place between the values:
+   *
+   * ```js
+   * collect([{name: 'Jon'}, {name: 'Arya'}]).implode('name', ', ');
+   * // Jon, Arya
+   * ```
+   *
+   * If the collection contains simple strings or numeric values,
+   * simply pass the "glue" as the only argument to the method:
+   *
+   * ```js
+   * collect(['Jon', 'Arya']).implode(', ');
+   * // Jon, Arya
+   * ```
+   *
+   * @param key
+   * @param glue
+   * @returns {string}
+   */
+  implode(key: string, glue?: string): string {
+    if (!glue) {
+      glue = key;
+      key = null;
+    }
+
+    const values = key ? this.pluck(key) : this;
+
+    return (<any[]>values.getAll()).join(glue);
+  }
 }

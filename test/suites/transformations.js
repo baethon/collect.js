@@ -61,4 +61,19 @@ export default {
       },
     }
   ],
+  implode: [
+    {
+      collection: collect([
+        {name: 'Jon'},
+        {name: 'Arya'},
+      ]),
+      args: ['name', ', '],
+      expected: 'Jon, Arya',
+    },
+    {
+      collection: collect(['Jon', 'Arya']),
+      args: [', '],
+      expected: 'Jon, Arya',
+    },
+  ],
 };
