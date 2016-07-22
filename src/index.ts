@@ -500,4 +500,17 @@ export class Collection {
 
     return new Collection(newCollection);
   }
+
+	/**
+   * Add an item to the beginning of the collection
+   *
+   * @param value
+   * @returns {Collection}
+   */
+  prepend(value: any): Collection {
+    const items = <any[]>this.items;
+    items.unshift(value);
+
+    return new Collection(items);
+  }
 }

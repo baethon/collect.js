@@ -101,4 +101,7 @@ export default {
       },
     },
   ],
+  prepend: [
+    {collection: collect([1, 2, 3]), args: [0], expected: [0, 1, 2, 3]},
+  ],
 };
