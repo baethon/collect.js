@@ -15,6 +15,10 @@ export interface ArrayCallback<T> {
   (currentValue: any, index?: number, array?: any[]): T;
 }
 
+export interface ReduceCallback {
+  (carry: any, currentValue: any, index?: number, array?: any[]): any;
+}
+
 export class Collection {
   private _items: any[];
 
@@ -512,5 +516,33 @@ export class Collection {
     items.unshift(value);
 
     return new Collection(items);
+  }
+
+	/**
+   * Reduce the collection to a single value,
+   * passing the result of each iteration into the subsequent iteration:
+   *
+   * ```js
+   * collect([1, 2, 3]).reduce((carry, current) => {
+   *    return carry ? carry + current : current;
+   * });
+   * // 6
+   * ```
+   *
+   * The value for carry on the first iteration is null;
+   * however, its initial value can be specified by passing a second argument to reduce:
+   *
+   * ```js
+   * collect([1, 2, 3]).reduce((carry, current) => carry + current, 0);
+   * // 6
+   * ```
+   *
+   * @param callback
+   * @param carry
+   * @returns {any}
+   */
+  reduce(callback: ReduceCallback, carry: any = null): any {
+    const items = <any[]>this.items;
+    return items.reduce(callback, carry);
   }
 }

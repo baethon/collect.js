@@ -124,6 +124,42 @@ describe('Collection', () => {
   });
 });
 
+describe('reduce() method', () => {
+  it('reduces values without initial carry value', () => {
+    const collection = collect([1, 2, 3]);
+    const reducedValue = collection.reduce((carry, current) => {
+      if (!carry) {
+        return current + 100;
+      }
+
+      return carry + current;
+    });
+
+    assert.equal(reducedValue, 106);
+  });
+
+  it('reduces values with initial carry value', () => {
+    const collection = collect([1, 2, 3]);
+    const reducedValue = collection.reduce((carry, current) => carry + current, 100);
+
+    assert.equal(reducedValue, 106);
+  });
+
+  it('passes index and array to callback', () => {
+    collect(['foo']).reduce((carry, current, index, array) => {
+      assert.equal(index, 0);
+      assert.deepEqual(array, ['foo']);
+    });
+  });
+
+  it('prevents from modifying array agrument', () => {
+    const collection = collect(['foo']);
+    collection.reduce((carry, current, index, array) => array.push('bar'));
+
+    assertCollectionItems(collection, ['foo']);
+  });
+});
+
 describe('Collection test suites', () => {
   const suites = [
     './suites/core',
