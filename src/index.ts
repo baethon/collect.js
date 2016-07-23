@@ -505,7 +505,7 @@ export class Collection {
     return new Collection(newCollection);
   }
 
-	/**
+  /**
    * Add an item to the beginning of the collection
    *
    * @param value
@@ -518,7 +518,7 @@ export class Collection {
     return new Collection(items);
   }
 
-	/**
+  /**
    * Reduce the collection to a single value,
    * passing the result of each iteration into the subsequent iteration:
    *
@@ -546,7 +546,7 @@ export class Collection {
     return items.reduce(callback, carry);
   }
 
-	/**
+  /**
    * Sort collection with given compareFunction.
    *
    * ```js
@@ -570,7 +570,7 @@ export class Collection {
     return new Collection(items);
   }
 
-	/**
+  /**
    * Sort the collection by the given key
    *
    * ```js
@@ -595,7 +595,7 @@ export class Collection {
     return this.sort((a, b) => a[key] - b[key]);
   }
 
-	/**
+  /**
    * Return the sum of all items in the collection:
    *
    * ```js
@@ -628,5 +628,26 @@ export class Collection {
     }
 
     return items.reduce((sum, current) => sum + current, 0);
+  }
+
+  /**
+   * Reverse the order of the collection's items:
+   *
+   * ```js
+   * collect([1, 2, 3]).revese();
+   * // Collection of [3, 2, 1]
+   * ```
+   *
+   * @returns {Collection}
+   */
+  reverse(): Collection {
+    const items = <any[]>this.items;
+    const indexes: number[] = [];
+
+    for (let i = items.length - 1; i >= 0; i--) {
+      indexes.push(i);
+    }
+
+    return new Collection(indexes.map(i => items[i]));
   }
 }

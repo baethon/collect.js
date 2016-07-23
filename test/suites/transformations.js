@@ -123,4 +123,7 @@ export default {
       ],
     },
   ],
+  reverse: [
+    {collection: collect([1, 2, 3]), expected: [3, 2, 1]},
+  ],
 };
