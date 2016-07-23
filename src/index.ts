@@ -19,6 +19,10 @@ export interface ReduceCallback {
   (carry: any, currentValue: any, index?: number, array?: any[]): any;
 }
 
+export interface UniqueCallback {
+  (value: any): any;
+}
+
 export class Collection {
   private _items: any[];
 
@@ -649,5 +653,69 @@ export class Collection {
     }
 
     return new Collection(indexes.map(i => items[i]));
+  }
+
+  /**
+   * Return all of the unique items in the collection:
+   *
+   * ```js
+   * collect([1, 1, 2, 2, 3, 4, 2]).unique();
+   * // Collection of [1, 2, 3, 4]
+   * ```
+   *
+   * When dealing with nested objects,
+   * it's possible to specify the key used to determine uniqueness:
+   *
+   * ```js
+   * const collection = collect([
+   *    {name: 'iPhone 6', brand: 'Apple', type: 'phone'},
+   *    {name: 'iPhone 5', brand: 'Apple', type: 'phone'},
+   *    {name: 'Apple Watch', brand: 'Apple', type: 'watch'},
+   *    {name: 'Galaxy S6', brand: 'Samsung', type: 'phone'},
+   *    {name: 'Galaxy Gear', brand: 'Samsung', type: 'watch'},
+   * ]);
+   *
+   * collection.unique('brand');
+   * // Collection of [
+   * //   {name: 'iPhone 6', brand: 'Apple', type: 'phone'},
+   * //   {name: 'Galaxy S6', brand: 'Samsung', type: 'phone'},
+   * // ]
+   * ```
+   *
+   * It's also possible to pass own callback to determine item uniqueness:
+   *
+   * ```js
+   * collection.unique(item => `${item.brand}${item.type}`);
+   * // Collection of [
+   * //   {name: 'iPhone 6', brand: 'Apple', type: 'phone'},
+   * //   {name: 'Apple Watch', brand: 'Apple', type: 'watch'},
+   * //   {name: 'Galaxy S6', brand: 'Samsung', type: 'phone'},
+   * //   {name: 'Galaxy Gear', brand: 'Samsung', type: 'watch'},
+   * // ]
+   * ```
+   *
+   * @param key
+   * @returns {Collection}
+   */
+  unique(key?: string|UniqueCallback): Collection {
+    let uniqueKey: UniqueCallback = (value: any): any => value;
+
+    if (typeof key === 'string') {
+      uniqueKey = (value: Object): any => value[key];
+    } else if (typeof key === 'function') {
+      uniqueKey = key;
+    }
+
+    const items: any[] = (<any[]>this.items).reduce((items: any[], value: any) => {
+      const key: any = uniqueKey(value);
+
+      if (!items.some(item => item.key === key)) {
+        items.push({key, value});
+      }
+
+      return items;
+    }, []);
+
+    return new Collection(items.map(({value}) => value));
   }
 }

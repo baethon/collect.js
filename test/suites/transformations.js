@@ -126,4 +126,37 @@ export default {
   reverse: [
     {collection: collect([1, 2, 3]), expected: [3, 2, 1]},
   ],
+  unique: [
+    {collection: collect([2, 1, 1, 2, 2, 3, 4, 2]), expected: [2, 1, 3, 4]},
+    {
+      collection: collect([
+        {name: 'iPhone 6', brand: 'Apple', type: 'phone'},
+        {name: 'iPhone 5', brand: 'Apple', type: 'phone'},
+        {name: 'Apple Watch', brand: 'Apple', type: 'watch'},
+        {name: 'Galaxy S6', brand: 'Samsung', type: 'phone'},
+        {name: 'Galaxy Gear', brand: 'Samsung', type: 'watch'},
+      ]),
+      args: ['brand'],
+      expected: [
+        {name: 'iPhone 6', brand: 'Apple', type: 'phone'},
+        {name: 'Galaxy S6', brand: 'Samsung', type: 'phone'},
+      ],
+    },
+    {
+      collection: collect([
+        {name: 'iPhone 6', brand: 'Apple', type: 'phone'},
+        {name: 'iPhone 5', brand: 'Apple', type: 'phone'},
+        {name: 'Apple Watch', brand: 'Apple', type: 'watch'},
+        {name: 'Galaxy S6', brand: 'Samsung', type: 'phone'},
+        {name: 'Galaxy Gear', brand: 'Samsung', type: 'watch'},
+      ]),
+      args: [item => `${item.brand}${item.type}`],
+      expected: [
+        {name: 'iPhone 6', brand: 'Apple', type: 'phone'},
+        {name: 'Apple Watch', brand: 'Apple', type: 'watch'},
+        {name: 'Galaxy S6', brand: 'Samsung', type: 'phone'},
+        {name: 'Galaxy Gear', brand: 'Samsung', type: 'watch'},
+      ],
+    }
+  ],
 };
