@@ -108,4 +108,19 @@ export default {
     {collection: collect([3, 5, 1]), expected: [1, 3, 5]},
     {collection: collect([3, 5, 1]), args: [(a, b) => b - a], expected: [5, 3, 1]},
   ],
+  sortBy: [
+    {
+      collection: collect([
+        {name: 'Desk', price: 200},
+        {name: 'Chair', price: 100},
+        {name: 'Bookcase', price: 150},
+      ]),
+      args: ['price'],
+      expected: [
+        {name: 'Chair', price: 100},
+        {name: 'Bookcase', price: 150},
+        {name: 'Desk', price: 200},
+      ],
+    },
+  ],
 };

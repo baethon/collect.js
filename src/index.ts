@@ -569,4 +569,29 @@ export class Collection {
     const items = (<any[]>this.items).sort(compareFunction);
     return new Collection(items);
   }
+
+	/**
+   * Sort the collection by the given key
+   *
+   * ```js
+   * const collection = collect([
+   *    {name: 'Desk', price: 200},
+   *    {name: 'Chair', price: 100},
+   *    {name: 'Bookcase', price: 150},
+   * ]);
+   *
+   * const sorted = collection.sortBy('price');
+   * // Collection of [
+   *    {name: 'Chair', price: 100},
+   *    {name: 'Bookcase', price: 150},
+   *    {name: 'Desk', price: 200},
+   * ]
+   * ```
+   *
+   * @param key
+   * @returns {Collection}
+   */
+  sortBy(key: string): Collection {
+    return this.sort((a, b) => a[key] - b[key]);
+  }
 }
