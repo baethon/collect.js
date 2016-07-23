@@ -104,4 +104,8 @@ export default {
   prepend: [
     {collection: collect([1, 2, 3]), args: [0], expected: [0, 1, 2, 3]},
   ],
+  sort: [
+    {collection: collect([3, 5, 1]), expected: [1, 3, 5]},
+    {collection: collect([3, 5, 1]), args: [(a, b) => b - a], expected: [5, 3, 1]},
+  ],
 };

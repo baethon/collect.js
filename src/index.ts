@@ -545,4 +545,28 @@ export class Collection {
     const items = <any[]>this.items;
     return items.reduce(callback, carry);
   }
+
+	/**
+   * Sort collection with given compareFunction.
+   *
+   * ```js
+   * collect([3, 5, 1]).sort((a, b) => b-a);
+   * // Collection of [5, 3, 1]
+   * ```
+   *
+   * If compareFunction is omitted, the array is sorted according to each character's
+   * Unicode code point value, according to the string conversion of each element.
+   *
+   * ```js
+   * collect([3,5,1]).sort();
+   * // Collection of [1, 3, 5]
+   * ```
+   *
+   * @param compareFunction
+   * @returns {Collection}
+   */
+  sort(compareFunction?: (a: any, b: any) => number): Collection {
+    const items = (<any[]>this.items).sort(compareFunction);
+    return new Collection(items);
+  }
 }
