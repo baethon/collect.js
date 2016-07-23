@@ -594,4 +594,39 @@ export class Collection {
   sortBy(key: string): Collection {
     return this.sort((a, b) => a[key] - b[key]);
   }
+
+	/**
+   * Return the sum of all items in the collection:
+   *
+   * ```js
+   * collect([1, 2, 3]).sum();
+   * // 6
+   * ```
+   *
+   * If the collection contains nested objects,
+   * a key to use for determining which values to sum should be passed:
+   *
+   * ```js
+   * collect([
+   *    {name: 'Desk', price: 200},
+   *    {name: 'Chair', price: 100},
+   *    {name: 'Bookcase', price: 150},
+   * ]).sum('price');
+   * // 450
+   * ```
+   *
+   * @param key
+   * @returns {number}
+   */
+  sum(key?: string): number {
+    let items: any[];
+
+    if (key) {
+      items = <any[]>this.pluck(key).getAll();
+    } else {
+      items = <any[]>this.items;
+    }
+
+    return items.reduce((sum, current) => sum + current, 0);
+  }
 }
