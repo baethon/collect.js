@@ -719,7 +719,7 @@ export class Collection {
     return new Collection(items.map(({value}) => value));
   }
 
-	/**
+  /**
    * Filters the collection by a given key / value pair:
    *
    * ```js
@@ -774,5 +774,29 @@ export class Collection {
    */
   whereIn(key: string, values: any[]): Collection {
     return this.filter(item => values.indexOf(item[key]) >= 0);
+  }
+
+  /**
+   * Merges together the values of the given array
+   * with the values of the collection at the corresponding index:
+   *
+   * ```js
+   * const collection = collect(['Chair', 'Desk']);
+   * const zipped = collection.zip([100, 200]);
+   * // Collection of [['Chair', 100], ['Desk', 200]]
+   * ```
+   *
+   * @param items
+   */
+  zip(...items: any[]): Collection {
+    const arrayableItems = items.map(toArray);
+    const zipped = this.reduce((zippedItems, currentItem, index) => {
+      const value = arrayableItems.map(item => item[index]);
+      value.unshift(currentItem);
+
+      return [...zippedItems, value];
+    }, []);
+
+    return new Collection(zipped);
   }
 }

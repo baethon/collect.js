@@ -189,5 +189,27 @@ export default {
         {product: 'Door', price: 100},
       ],
     },
-  ]
+  ],
+  zip: [
+    {
+      collection: collect(['Chair', 'Desk']),
+      args: [[100, 200]],
+      expected: [['Chair', 100], ['Desk', 200]],
+    },
+    {
+      collection: collect(['Chair', 'Desk']),
+      args: [[100, 200], ['good', 'broken']],
+      expected: [['Chair', 100, 'good'], ['Desk', 200, 'broken']],
+    },
+    {
+      collection: collect(['Chair', 'Desk']),
+      args: [[100]],
+      expected: [['Chair', 100], ['Desk', undefined]],
+    },
+    {
+      collection: collect(['Chair', 'Desk']),
+      args: [collect([100, 200])],
+      expected: [['Chair', 100], ['Desk', 200]],
+    },
+  ],
 };
