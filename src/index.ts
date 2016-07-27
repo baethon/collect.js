@@ -40,6 +40,11 @@ export class Collection {
     this._items = items;
   }
 
+	/**
+   * Returns array/object stored inside Collection instance
+   *
+   * @returns {any}
+   */
   getAll(): any[]|Object {
     if (Array.isArray(this._items)) {
       return this._items.slice();
@@ -83,31 +88,99 @@ export class Collection {
     return new Collection(values);
   }
 
+	/**
+   * Merges the given array into the collection:
+   *
+   * ```js
+   * collect([1, 2, 3]).merge([4, 5, 6]);
+   * // Collection of [1, 2, 3, 4, 5, 6]
+   * ```
+   *
+   * @param items
+   * @returns {Collection}
+   */
   merge(items: Collection|any[]): Collection {
     return new Collection(this._items.concat(toArray(items)));
   }
 
-  forEach(callback: ArrayCallback<void>): void {
+	/**
+   * Iterates over the items in the collection and passes each item to a given callback:
+   *
+   * ```js
+   * const collection = collect([1, 2, 3]).forEach(item => console.log(item));
+   * // Collection of [1, 2, 3]
+   * ```
+   *
+   * @param callback
+   * @returns {Collection}
+   */
+  forEach(callback: ArrayCallback<void>): Collection {
     Array.prototype.forEach.call(this._items.slice(), callback);
+
+    return this;
   }
 
+	/**
+   * Puts given values at the end of array
+   *
+   * ```js
+   * collect([1, 2, 3]).push(4, 5, 6);
+   * // Collection of [1, 2, 3, 4, 5, 6]
+   * ```
+   *
+   * @param values
+   * @returns {Collection}
+   */
   push(...values: any[]): Collection {
     return new Collection(this._items.concat(values));
   }
 
+	/**
+   * Iterates through the collection and passes each value to the given callback.
+   * The callback is free to modify the item and return it,
+   * thus forming a new collection of modified items:
+   *
+   * ```js
+   * collect([1, 2, 3]).map(item => item + 1);
+   * // Collection of [2, 3, 4]
+   * ```
+   *
+   * @param callback
+   * @returns {Collection}
+   */
   map(callback: ArrayCallback<any>): Collection {
-    const newItems = Array.prototype.map.call(this._items.slice(), callback);
-    return new Collection(newItems);
+    return new Collection((<any[]>this.items).map(callback));
   }
 
-  filter(callback: ArrayCallback<boolean>): Collection {
-    const newItems = Array.prototype.filter.call(this._items.slice(), callback);
-    return new Collection(newItems);
+	/**
+   * Returns collections of items matching given predicate:
+   *
+   * ```js
+   * collect([1, 2, 3]).filter(i => i % 2 === 0);
+   * // Collection of [2]
+   * ```
+   *
+   * @param predicate
+   * @returns {Collection}
+   */
+  filter(predicate: ArrayCallback<boolean>): Collection {
+    return new Collection((<any[]>this.items).filter(predicate));
   }
 
-  reject(callback: ArrayCallback<boolean>): Collection {
+	/**
+   * Returns collection of items not matching given predicate:
+   *
+   * ```js
+   * collect([1, 2, 3]).reject(i => i % 2 === 0);
+   * // Collection of [1, 3]
+   * ```
+   *
+   * @param predicate
+   * @returns {Collection}
+   */
+  reject(predicate: ArrayCallback<boolean>): Collection {
     return this.filter(
-      (currentValue: any, index: number, array: any[]) => !callback(currentValue, index, array)
+      (currentValue: any, index: number, array: any[]) => !predicate(currentValue, index, array)
     );
   }
 
