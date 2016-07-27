@@ -174,4 +174,20 @@ export default {
       ],
     },
   ],
+  whereIn: [
+    {
+      collection: collect([
+        {product: 'Desk', price: 200},
+        {product: 'Chair', price: 100},
+        {product: 'Bookcase', price: 150},
+        {product: 'Door', price: 100},
+      ]),
+      args: ['price', [100, 150]],
+      expected: [
+        {product: 'Chair', price: 100},
+        {product: 'Bookcase', price: 150},
+        {product: 'Door', price: 100},
+      ],
+    },
+  ]
 };

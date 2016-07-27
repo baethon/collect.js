@@ -744,6 +744,35 @@ export class Collection {
    * @returns {Collection}
    */
   where(key: string, value: any): Collection {
-    return this.filter(item => item[key] === value);
+    return this.whereIn(key, [value]);
+  }
+
+  /**
+   * Filters the collection by a given key / value contained within the given array:
+   *
+   * ```js
+   * const collection = collect([
+   *    {product: 'Desk', price: 200},
+   *    {product: 'Chair', price: 100},
+   *    {product: 'Bookcase', price: 150},
+   *    {product: 'Door', price: 100},
+   * ]);
+   *
+   * collection.whereIn('price', [100, 150]);
+   * // Collection of [
+   * //   {product: 'Chair', price: 100},
+   * //   {product: 'Bookcase', price: 150},
+   * //   {product: 'Door', price: 100},
+   * // ]
+   * ```
+   *
+   * Method uses strict comparisons when checking item values.
+   *
+   * @param key
+   * @param values
+   * @returns {Collection}
+   */
+  whereIn(key: string, values: any[]): Collection {
+    return this.filter(item => values.indexOf(item[key]) >= 0);
   }
 }
