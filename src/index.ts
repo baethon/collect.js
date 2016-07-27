@@ -718,4 +718,32 @@ export class Collection {
 
     return new Collection(items.map(({value}) => value));
   }
+
+	/**
+   * Filters the collection by a given key / value pair:
+   *
+   * ```js
+   * const collection = collect([
+   *    {product: 'Desk', price: 200},
+   *    {product: 'Chair', price: 100},
+   *    {product: 'Bookcase', price: 150},
+   *    {product: 'Door', price: 100},
+   * ]);
+   *
+   * collection.where('price', 100);
+   * // Collection of [
+   * //   {product: 'Chair', price: 100},
+   * //   {product: 'Door', price: 100},
+   * // ]
+   * ```
+   *
+   * Method uses strict comparisons when checking item values.
+   *
+   * @param key
+   * @param value
+   * @returns {Collection}
+   */
+  where(key: string, value: any): Collection {
+    return this.filter(item => item[key] === value);
+  }
 }
