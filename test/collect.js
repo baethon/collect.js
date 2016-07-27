@@ -69,9 +69,11 @@ describe('Collection', () => {
   describe('forEach() method', () => {
     it('iterates over items', () => {
       let string = '';
+      const collection = collect(['foo', 'bar']);
+      const result = collection.forEach(item => string += item);
 
-      collect(['foo', 'bar']).forEach(item => string += item);
       assert.equal('foobar', string);
+      assert.equal(collection, result);
     });
 
     assertArrayCallbacks.passing('forEach');

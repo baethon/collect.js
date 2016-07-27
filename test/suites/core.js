@@ -9,7 +9,8 @@ export default {
   ],
   push: [
     {collection, args: ['foo'], expected: [1, 2, 3, 'foo']},
-    {collection, args: ['foo', 'bar'], expected: [1, 2, 3, 'foo', 'bar']}
+    {collection, args: ['foo', 'bar'], expected: [1, 2, 3, 'foo', 'bar']},
+    {collection, args: [['foo', 'bar']], expected: [1, 2, 3, ['foo', 'bar']]},
   ],
   map: [
     {collection, args: [i => i + 1], expected: [2, 3, 4]},
