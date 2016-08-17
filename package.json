@@ -33,6 +33,8 @@
     "lint": "tslint -c tslint.json src/*.ts",
     "prelib": "rm -rf lib && mkdir lib",
     "lib": "tsc",
+    "predocs": "npm run lib",
+    "docs": "jsdox -t build/templates -o build lib/index.js && mv build/index.md README.md",
     "premocha": "npm run lib",
     "mocha": "mocha --compilers js:babel-register test",
     "test": "npm run lint && npm run mocha",
