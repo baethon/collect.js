@@ -1,32 +1,5 @@
 {{#modules}}
-{{#name}}
-# {{name}}
-{{/name}}
-
-{{#hasRequires}}
-**Requires:**
-
-{{#requires}}
-+ {{{req}}}
-{{/requires}}
-{{/hasRequires}}
-
-{{#hasMembers}}
-**Members:**
-
-{{#members}}
-+ {{{member}}}
-{{/members}}
-{{/hasMembers}}
-
-{{#examples}}
-**Example:**
-```js
-{{{examples}}}
-```
-
-{{/examples}}
-* * *
+## Functions
 
 {{#functions}}
 {{> function}}
@@ -38,14 +11,3 @@
 {{/classes}}
 
 {{/modules}}
-* * *
-
-{{#copyright}}*{{copyright}}*{{/copyright}}
-
-{{#author}}**Author:** {{author}}{{/author}}
-
-{{#license}}**License:** {{license}} {{/license}}
-
-{{#overview}}**Overview:** {{{overview}}}{{/overview}}
-
-{{#version}}**Version:** {{version}}{{/version}}

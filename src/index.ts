@@ -1,8 +1,4 @@
 /**
- * @module @baethon/collect
- */
-
-/**
  * Creates new Collection instance
  *
  * ```js
