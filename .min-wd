@@ -1,0 +1,21 @@
+{
+  "sauceLabs": true,
+  "browsers": [
+    {
+      "name": "Internet Explorer",
+      "version": "11"
+    },
+    {
+      "name": "microsoftedge",
+      "version": "latest-2"
+    },
+    {
+      "name": "googlechrome",
+      "version": "latest-2"
+    },
+    {
+      "name": "firefox",
+      "version": "latest-2"
+    }
+  ]
+}
