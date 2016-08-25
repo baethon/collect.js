@@ -1,8 +1,8 @@
-import {collect} from '../../lib';
+const {collect} = require('../../lib');
 
 const collection = collect([1, 2, 3]);
 
-export default {
+module.exports = {
   merge: [
     {collection, args: [[4, 5, 6]], expected: [1, 2, 3, 4, 5, 6]},
     {collection, args: [collect([4, 5, 6])], expected: [1, 2, 3, 4, 5, 6]},

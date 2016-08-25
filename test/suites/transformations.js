@@ -1,6 +1,6 @@
-import {collect} from '../../lib';
+const {collect} = require('../../lib');
 
-export default {
+module.exports = {
   collapse: [
     {collection: collect([[1, 2], [3, 4]]), expected: [1, 2, 3, 4]},
   ],

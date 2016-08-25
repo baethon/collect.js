@@ -1,7 +1,9 @@
-import {describe, it} from 'mocha';
-import assert from 'assert';
-import {collect, Collection} from '../lib';
-import {runSuite} from './suites/runSuite';
+require('es6-shim');
+
+const {describe, it} = require('mocha');
+const assert = require('assert');
+const {collect, Collection} = require('../lib');
+const {runSuite} = require('./suites/runSuite');
 
 const assertCollectionItems = (collection, items) => {
   assert.deepEqual(collection.getAll(), items);
@@ -164,12 +166,12 @@ describe('reduce() method', () => {
 
 describe('Collection test suites', () => {
   const suites = [
-    './suites/core',
-    './suites/aggregates',
-    './suites/transformations',
+    require('./suites/core'),
+    require('./suites/aggregates'),
+    require('./suites/transformations'),
   ];
 
   suites.forEach(path => {
-    runSuite(require(path).default);
+    runSuite(path);
   });
 });
