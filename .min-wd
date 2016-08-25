@@ -3,19 +3,23 @@
   "browsers": [
     {
       "name": "Internet Explorer",
-      "version": "11"
+      "version": "11",
+      "platform": "Windows 10"
     },
     {
       "name": "microsoftedge",
-      "version": "latest-2"
+      "version": "latest",
+      "platform": "Windows 10"
     },
     {
-      "name": "googlechrome",
-      "version": "latest-2"
+      "name": "chrome",
+      "version": "latest-2",
+      "platform": "Windows 10"
     },
     {
       "name": "firefox",
-      "version": "latest-2"
+      "version": "latest-2",
+      "platform": "Windows 10"
     }
   ]
 }

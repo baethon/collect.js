@@ -37,7 +37,7 @@
     "lib": "tsc",
     "premocha": "npm run lib",
     "mocha": "mocha --compilers js:babel-register test",
-    "saucelabs": "mochify --transform [ babelify --presets [ es2015 ] ]",
+    "saucelabs": "mochify --wd --transform [ babelify --presets [ es2015 ] ]",
     "test": "npm run lint && npm run mocha",
     "prepublish": "npm run lib",
     "preversion": "npm run lib && git add lib/ && git diff --quiet --exit-code --cached || git commit -a -m 'Build lib/'",
