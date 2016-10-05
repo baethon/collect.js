@@ -1,3 +1,15 @@
+/**
+ * Creates new Collection instance
+ *
+ * ```js
+ * import {collect} from '@baethon/collect';
+ *
+ * const collection = collect([1, 2, 3]);
+ * ```
+ *
+ * @param items
+ * @returns {Collection}
+ */
 export function collect(items: any): Collection {
   return new Collection(items);
 }
@@ -23,6 +35,9 @@ export interface UniqueCallback {
   (value: any): any;
 }
 
+/**
+ * @interface
+ */
 export class Collection {
   private _items: any[];
 
@@ -659,10 +674,10 @@ export class Collection {
    *
    * const sorted = collection.sortBy('price');
    * // Collection of [
-   *    {name: 'Chair', price: 100},
-   *    {name: 'Bookcase', price: 150},
-   *    {name: 'Desk', price: 200},
-   * ]
+   * //    {name: 'Chair', price: 100},
+   * //    {name: 'Bookcase', price: 150},
+   * //    {name: 'Desk', price: 200},
+   * // ]
    * ```
    *
    * @param key
