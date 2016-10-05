@@ -1,6 +1,6 @@
 # @baethon/collect
 
-This package is supposed to be immutable, eventually consistent (let's say heavily inspired), clone of Laravel's support class for [collections](https://laravel.com/docs/master/collections).
+This package is supposed to be immutable, eventually consistent (let's say heavily inspired) clone of Laravel's support class for [collections](https://laravel.com/docs/master/collections).
 
 ## Installation
 
@@ -15,29 +15,20 @@ It may be required to install [es5-shim](https://github.com/es-shims/es5-shim).
 
 ## Development
 
-To execute tests run:
+TSLint and Mocha unit tests:
 
 ```
 npm test
 ```
 
-This will run TSLint with Mocha unit tests.
-
-To execute unit tests run:
-
-```
-npm run mocha
-```
-
-To compile library (note that compiled sources are not comitted to repo):
+Library compilation (compiled sources are not commited to repo):
 
 ```
 npm run lib
 ```
 
-To generate API docs run:
+Generate API docs:
 
 ```
 npm run docs
 ```
-
