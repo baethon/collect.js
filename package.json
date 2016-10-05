@@ -1,6 +1,6 @@
 {
   "name": "@baethon/collect",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Laravel inspired library for handling collections",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
