@@ -38,6 +38,8 @@ npm run docs
 `Collection` class is extendable via `macro()` static method.
 
 ```js
+import {Collection} from '@baethon/collect';
+
 Collection.macro('even', () => {
   return this.filter(i => i % 2 === 0);
 });
@@ -49,6 +51,8 @@ collect([1, 2, 3, 4]).even();
 When macro returns non-arrayable value it will be simply returned.
 
 ```js
+import {Collection} from '@baethon/collect';
+
 Collection.macro('countPlusTen', () => this.getAll().length + 10);
 
 collect([1]).countPlusTen();
