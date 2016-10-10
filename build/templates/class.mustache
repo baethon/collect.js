@@ -1,0 +1,10 @@
+{{#name}}
+## Class: {{name}}
+{{/name}}
+
+{{#members}}
+**{{name}}**: {{#typesString}}`{{typesString}}`{{/typesString}} {{#description}}, {{{description}}}{{/description}}
+{{/members}}
+{{#methods}}
+{{> function}}
+{{/methods}}

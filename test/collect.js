@@ -1,6 +1,7 @@
 import {describe, it} from 'mocha';
 import assert from 'assert';
 import {collect, Collection} from '../lib';
+import {runSuite} from './suites/runSuite';
 
 const assertCollectionItems = (collection, items) => {
   assert.deepEqual(collection.getAll(), items);
@@ -28,7 +29,7 @@ const assertArrayCallbacks = {
   }
 }
 
-describe('collect test suite', () => {
+describe('Collection', () => {
   it('returns collection instance', () => {
     const items = ['foo', 'bar'];
     const collection = collect(items);
@@ -38,14 +39,23 @@ describe('collect test suite', () => {
     assert.notStrictEqual(collection.getAll(), items);
   });
 
-  it('allows to set arrays only', () => {
+  it('allows to set arrays, objects or other collections', () => {
     assert.throws(() => collect(null), Error);
+    assert.throws(() => collect(123), Error);
+    assert.throws(() => collect('123'), Error);
+    assert.throws(() => collect(() => {}), Error);
+    assert.doesNotThrow(() => collect([]));
+    assert.doesNotThrow(() => collect({}));
+    assert.doesNotThrow(() => collect(collect([])));
   });
 
   it('returns copy of items', () => {
-    const collection = collect(['foo']);
-
+    let collection = collect(['foo']);
     assert.notStrictEqual(collection.getAll(), collection._items);
+    
+    collection = collect({name: 'Jon'});
+    assert.notStrictEqual(collection.getAll(), collection._items);
+    assertCollectionItems(collection, {name: 'Jon'});
   });
 
   it('can be created from other collection', () => {
@@ -56,78 +66,31 @@ describe('collect test suite', () => {
     assertCollectionItems(newColleciton, collection.getAll());
   });
 
-  it('merges other arrays', () => {
-    const collection = collect([]);
-    const mergedCollection = collection.merge(['foo']);
-
-    assert.ok(mergedCollection instanceof Collection);
-    assert.notStrictEqual(mergedCollection, collection);
-    assertCollectionItems(mergedCollection, ['foo']);
-  });
-
-  it('merges other collections', () => {
-    const collection = collect(['foo']);
-    const mergedCollection = collection.merge(collect(['bar']));
-
-    assertCollectionItems(mergedCollection, ['foo', 'bar']);
-  });
-
   describe('forEach() method', () => {
     it('iterates over items', () => {
       let string = '';
+      const collection = collect(['foo', 'bar']);
+      const result = collection.forEach(item => string += item);
 
-      collect(['foo', 'bar']).forEach(item => string += item);
       assert.equal('foobar', string);
+      assert.equal(collection, result);
     });
 
     assertArrayCallbacks.passing('forEach');
     assertArrayCallbacks.preventFromModifying('forEach');
   });
 
-  it('allows to push new values', () => {
-    const collection = collect(['foo']);
-    const newCollection = collection.push('bar');
-
-    assertCollectionItems(collection, ['foo']);
-    assertCollectionItems(newCollection, ['foo', 'bar']);
-    assertCollectionItems(collection.push('bar', 'baz'), ['foo', 'bar', 'baz']);
-  });
-
-  describe('map() method', () => {
-    it('allows to map values', () => {
-      const collection = collect([1, 2, 3]);
-      const newCollection = collection.map(i => i + 1);
-
-      assertCollectionItems(collection, [1, 2, 3]);
-      assertCollectionItems(newCollection, [2, 3, 4]);
-    });
-
+  describe('map() callback arguments', () => {
     assertArrayCallbacks.passing('map');
     assertArrayCallbacks.preventFromModifying('map');
   });
 
-  describe('filter() method', () => {
-    it('filters values', () => {
-      const collection = collect([1, 2, 3, 4]);
-      const newCollection = collection.filter(i => i % 2 === 0);
-
-      assertCollectionItems(collection, [1, 2, 3, 4]);
-      assertCollectionItems(newCollection, [2, 4]);
-    });
-
+  describe('filter() callback arguments', () => {
     assertArrayCallbacks.passing('filter');
     assertArrayCallbacks.preventFromModifying('filter');
   });
 
-  describe('reject() method', () => {
-    it('rejects values', () => {
-      const collection = collect([1, 2, 3, 4]);
-      const newCollection = collection.reject(i => i % 2 === 0);
-
-      assertCollectionItems(collection, [1, 2, 3, 4]);
-      assertCollectionItems(newCollection, [1, 3]);
-    });
-
+  describe('reject() callback arguments', () => {
     assertArrayCallbacks.passing('reject');
     assertArrayCallbacks.preventFromModifying('reject');
   });
@@ -156,23 +119,58 @@ describe('collect test suite', () => {
       assertCollectionItems(collection, [1, 2, 3]);
     });
   });
-  
-  describe('slice() method', () => {
-    const collection = collect(['foo', 'bar', 'baz']);
-    const cases = [
-      {start: 0, size: 1, expected: ['foo']},
-      {start: 1, size: 2, expected: ['bar', 'baz']},
-      {start: 2, size: undefined, expected: ['baz']},
-    ];
 
-    cases.forEach((testCase, index) => {
-      const {start, size, expected} = testCase;
+  it('retuns values of an array', () => {
+    const collection = collect([1, 2, 3]);
+    assert.deepEqual(collection.values().getAll(), [1, 2, 3]);
+  });
+});
 
-      it(`test case #${index+1}: ${JSON.stringify(testCase)}`, () => {
-        const newCollection = collection.slice(...[start, size]);
-        assert.deepEqual(newCollection.getAll(), expected);
-      });
+describe('reduce() method', () => {
+  it('reduces values without initial carry value', () => {
+    const collection = collect([1, 2, 3]);
+    const reducedValue = collection.reduce((carry, current) => {
+      if (!carry) {
+        return current + 100;
+      }
+
+      return carry + current;
     });
+
+    assert.equal(reducedValue, 106);
+  });
+
+  it('reduces values with initial carry value', () => {
+    const collection = collect([1, 2, 3]);
+    const reducedValue = collection.reduce((carry, current) => carry + current, 100);
+
+    assert.equal(reducedValue, 106);
+  });
+
+  it('passes index and array to callback', () => {
+    collect(['foo']).reduce((carry, current, index, array) => {
+      assert.equal(index, 0);
+      assert.deepEqual(array, ['foo']);
+    });
+  });
+
+  it('prevents from modifying array agrument', () => {
+    const collection = collect(['foo']);
+    collection.reduce((carry, current, index, array) => array.push('bar'));
+
+    assertCollectionItems(collection, ['foo']);
+  });
+});
+
+describe('Collection test suites', () => {
+  const suites = [
+    './suites/core',
+    './suites/aggregates',
+    './suites/transformations',
+  ];
+
+  suites.forEach(path => {
+    runSuite(require(path).default);
   });
 
   describe('extending via macros', () => {

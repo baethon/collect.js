@@ -2,6 +2,7 @@
   "name": "@baethon/collect",
   "dependencies": {},
   "globalDevDependencies": {
-    "es2015-array": "registry:env/es2015-array#1.0.0+20160526151700"
+    "es2015-array": "registry:env/es2015-array#1.0.0+20160526151700",
+    "es2015-object": "registry:env/es2015-object#1.0.0+20160526151700"
   }
 }
