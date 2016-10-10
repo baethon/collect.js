@@ -32,3 +32,26 @@ Generate API docs:
 ```
 npm run docs
 ```
+
+## Extending
+
+`Collection` class is extendable via `macro()` static method.
+
+```js
+Collection.macro('even', () => {
+  return this.filter(i => i % 2 === 0);
+});
+
+collect([1, 2, 3, 4]).even();
+// Collection of [2, 4]
+```
+
+When macro returns non-arrayable value it will be simply returned.
+
+```js
+Collection.macro('countPlusTen', () => this.getAll().length + 10);
+
+collect([1]).countPlusTen();
+// 10
+```
+
