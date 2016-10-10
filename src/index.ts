@@ -887,4 +887,16 @@ export class Collection {
 
     return new Collection(zipped);
   }
+
+  static macro(name: string, callback: (...args: any[]) => any): void {
+    Collection.prototype[name] = function (...args: any[]): any {
+      const result = callback.call(this, ...args);
+
+      try {
+        return new Collection(result);
+      } catch (e) {
+        return result;
+      }
+    };
+  }
 }

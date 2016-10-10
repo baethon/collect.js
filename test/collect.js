@@ -172,4 +172,33 @@ describe('Collection test suites', () => {
   suites.forEach(path => {
     runSuite(require(path).default);
   });
+
+  describe('extending via macros', () => {
+    afterEach(() => {
+      delete Collection.prototype.assert;
+    });
+
+    it('returns new collection if macro returns arrayable', () => {
+      Collection.macro('assert', function (assert, instance) {
+        assert.strictEqual(this, instance);
+
+        return [1, 2, 3];
+      });
+
+      const collection = collect([]);
+      const newCollection = collection.assert(assert, collection);
+
+      assert.notStrictEqual(collection, newCollection);
+      assert.notDeepEqual(collection.getAll(), newCollection.getAll());
+      assert.deepEqual(newCollection.getAll(), [1, 2, 3]);
+    });
+
+    it('returns non-array values', () => {
+      Collection.macro('assert', function () {
+        return 42;
+      });
+
+      assert.equal(collect([]).assert(), 42);
+    });
+  });
 });
