@@ -174,7 +174,11 @@ describe('Collection test suites', () => {
   });
 
   describe('extending via macros', () => {
-    it('return new collection if macro returns array', () => {
+    afterEach(() => {
+      delete Collection.prototype.assert;
+    });
+
+    it('returns new collection if macro returns arrayable', () => {
       Collection.macro('assert', function (assert, instance) {
         assert.strictEqual(this, instance);
 
@@ -187,8 +191,6 @@ describe('Collection test suites', () => {
       assert.notStrictEqual(collection, newCollection);
       assert.notDeepEqual(collection.getAll(), newCollection.getAll());
       assert.deepEqual(newCollection.getAll(), [1, 2, 3]);
-
-      delete Collection.prototype.assert;
     });
 
     it('returns non-array values', () => {
@@ -197,8 +199,6 @@ describe('Collection test suites', () => {
       });
 
       assert.equal(collect([]).assert(), 42);
-
-      delete Collection.prototype.assert;
     });
   });
 });
