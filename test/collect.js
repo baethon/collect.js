@@ -1,6 +1,6 @@
 import {describe, it} from 'mocha';
 import assert from 'assert';
-import {collect, Collection} from '../src';
+import {collect, Collection} from '../lib';
 import {runSuite} from './suites/runSuite';
 
 const assertCollectionItems = (collection, items) => {

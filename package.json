@@ -28,12 +28,12 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-register": "^6.9.0",
     "jsdox": "^0.4.10",
-    "mocha": "2.3.3"
+    "mocha": "^3.1.2"
   },
   "scripts": {
     "prelib": "rm -rf lib && mkdir lib",
+    "premocha": "npm run lib",
     "mocha": "mocha --compilers js:babel-register test",
-    "prelib": "rm -rf lib && mkdir lib",
     "lib": "babel src/index.js --out-file lib/index.js",
     "predocs": "jsdox -t build/templates -o build src/index.js",
     "docs": "build/docs.sh",

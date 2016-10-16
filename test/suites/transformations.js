@@ -1,4 +1,4 @@
-import {collect} from '../../src';
+import {collect} from '../../lib';
 
 export default {
   collapse: [
