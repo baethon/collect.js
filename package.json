@@ -47,5 +47,8 @@
     "version-minor": "npm version minor --message 'Version bump: %s'",
     "version-major": "npm version major --message 'Version bump: %s'",
     "postversion": "npm publish --access=public"
+  },
+  "dependencies": {
+    "ramda": "^0.22.1"
   }
 }
