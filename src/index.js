@@ -20,9 +20,6 @@ const toArray = value => value instanceof Collection ? value.getAll() : Array.fr
 
 const isObject = value => Object.prototype.toString.call(value) === '[object Object]';
 
-/**
- * @interface
- */
 export class Collection {
   constructor(items = []) {
     const arrayable = isArrayable(items);

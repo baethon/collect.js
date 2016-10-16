@@ -31,8 +31,9 @@
   },
   "scripts": {
     "prelib": "rm -rf lib && mkdir lib",
-    "docs": "jsdox -t build/templates -o build src/index.js && cat build/{README,index}.md > README.md",
     "mocha": "mocha --compilers js:babel-register test",
+    "predocs": "jsdox -t build/templates -o build src/index.js",
+    "docs": "build/docs.sh",
     "test": "npm run mocha",
     "version-patch": "npm version patch --message 'Version bump: %s'",
     "version-minor": "npm version minor --message 'Version bump: %s'",

@@ -74,7 +74,6 @@ const collection = collect([1, 2, 3]);
 **Returns**: `Collection`
 
 ## Class: Collection
-
 ### Collection.getAll() 
 
 Returns array/object stored inside Collection instance
@@ -219,6 +218,41 @@ collect([{name: 'Jon', house: 'Stark'}]).pluck('name', 'house');
 ```
 
 **Returns**: `Collection`
+### Collection.contains(predicate, value) 
+
+Determines whether the collection contains a given item:
+
+```js
+collect({name: 'Jon'}).contains('Jon');
+// true
+
+collect({name: 'Jon'}).contains('Arrya');
+// false
+```
+
+It's possible to pass a key / value pair to the contains method,
+which will determine if the given pair exists in the collection:
+
+```js
+const collection = collect([
+  {name: 'Jon', lastname: 'Snow'},
+  {name: 'Arya', lastname: 'Stark'},
+]);
+
+collection.contains('lastname', 'Stark');
+// true
+```
+
+Also it's possible to pass own callback to perform truth test:
+
+```js
+collection([1, 2, 3]).contains(i => i >= 3);
+// true
+```
+
+Arguments passed to callback are the same as in Array.some method.
+
+**Returns**: `boolean`
 ### Collection.except(keys) 
 
 Returns all items in the collection except for those with the specified keys:
