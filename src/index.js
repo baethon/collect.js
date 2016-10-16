@@ -10,38 +10,21 @@
  * @param items
  * @returns {Collection}
  */
-export function collect(items: any): Collection {
+export function collect(items) {
   return new Collection(items);
 }
 
-const isArrayable: (value: any) => boolean =
-  value => value instanceof Collection || Array.isArray(value);
+const isArrayable = value => value instanceof Collection || Array.isArray(value);
 
-const toArray: (value: any) => any[] =
-  value => value instanceof Collection ? <any[]>value.getAll() : Array.from(value);
+const toArray = value => value instanceof Collection ? value.getAll() : Array.from(value);
 
-const isObject: (value: any) => boolean =
-  value => Object.prototype.toString.call(value) === '[object Object]';
-
-export interface ArrayCallback<T> {
-  (currentValue: any, index?: number, array?: any[]): T;
-}
-
-export interface ReduceCallback {
-  (carry: any, currentValue: any, index?: number, array?: any[]): any;
-}
-
-export interface UniqueCallback {
-  (value: any): any;
-}
+const isObject = value => Object.prototype.toString.call(value) === '[object Object]';
 
 /**
  * @interface
  */
 export class Collection {
-  private _items: any[];
-
-  constructor(items: any) {
+  constructor(items = []) {
     const arrayable = isArrayable(items);
 
     if (!arrayable && !isObject(items)) {
@@ -60,7 +43,7 @@ export class Collection {
    *
    * @returns {any}
    */
-  getAll(): any[]|Object {
+  getAll() {
     if (Array.isArray(this._items)) {
       return this._items.slice();
     }
@@ -77,7 +60,7 @@ export class Collection {
    *
    * @returns {Collection}
    */
-  keys(): Collection {
+  keys() {
     return new Collection(Object.keys(this._items));
   }
 
@@ -94,7 +77,7 @@ export class Collection {
    *
    * @returns {Collection}
    */
-  values(): Collection {
+  values() {
     if (Array.isArray(this._items)) {
       return new Collection(this._items);
     }
@@ -114,7 +97,7 @@ export class Collection {
    * @param items
    * @returns {Collection}
    */
-  merge(items: Collection|any[]): Collection {
+  merge(items) {
     return new Collection(this._items.concat(toArray(items)));
   }
 
@@ -129,7 +112,7 @@ export class Collection {
    * @param callback
    * @returns {Collection}
    */
-  forEach(callback: ArrayCallback<void>): Collection {
+  forEach(callback) {
     Array.prototype.forEach.call(this._items.slice(), callback);
 
     return this;
@@ -146,7 +129,7 @@ export class Collection {
    * @param values
    * @returns {Collection}
    */
-  push(...values: any[]): Collection {
+  push(...values) {
     return new Collection(this._items.concat(values));
   }
 
@@ -163,8 +146,8 @@ export class Collection {
    * @param callback
    * @returns {Collection}
    */
-  map(callback: ArrayCallback<any>): Collection {
-    return new Collection((<any[]>this.items).map(callback));
+  map(callback) {
+    return new Collection(this.items.map(callback));
   }
 
 	/**
@@ -178,8 +161,8 @@ export class Collection {
    * @param predicate
    * @returns {Collection}
    */
-  filter(predicate: ArrayCallback<boolean>): Collection {
-    return new Collection((<any[]>this.items).filter(predicate));
+  filter(predicate) {
+    return new Collection(this.items.filter(predicate));
   }
 
 	/**
@@ -193,13 +176,13 @@ export class Collection {
    * @param predicate
    * @returns {Collection}
    */
-  reject(predicate: ArrayCallback<boolean>): Collection {
+  reject(predicate) {
     return this.filter(
-      (currentValue: any, index: number, array: any[]) => !predicate(currentValue, index, array)
+      (currentValue, index, array) => !predicate(currentValue, index, array)
     );
   }
 
-  ifEmpty(callback: () => any): Collection {
+  ifEmpty(callback) {
     if (this._items.length) {
       return this;
     }
@@ -213,7 +196,7 @@ export class Collection {
     }
   }
 
-  slice(start: number, size?: number): Collection {
+  slice(start, size) {
     const end = (size === undefined) ? undefined : start + size;
     const newItems = Array.prototype.slice.call(this._items, start, end);
     return new Collection(newItems);
@@ -243,8 +226,8 @@ export class Collection {
    * @param keyName
    * @returns {number}
    */
-  avg(keyName?: string): number {
-    let items = <any[]>this.getAll();
+  avg(keyName) {
+    let items = this.getAll();
 
     if (keyName) {
       items = items.map(item => item[keyName]);
@@ -262,8 +245,8 @@ export class Collection {
    * // Collection of [1, 2, 3, 4]
    * ```
    */
-  collapse(): Collection {
-    const items = (<any[]>this.getAll())
+  collapse() {
+    const items = this.getAll()
       .reduce((flatArray, current) => flatArray.concat(current), []);
 
     return new Collection(items);
@@ -280,7 +263,7 @@ export class Collection {
    * @param values
    * @returns {Collection}
    */
-  combine(values: Collection|any[]): Collection {
+  combine(values) {
     values = toArray(values);
 
     const combined = this._items.reduce((combined, keyName, index) => Object.assign(combined, {
@@ -309,8 +292,8 @@ export class Collection {
    * @param keyName
    * @returns {Collection}
    */
-  pluck(valuesName: string, keyName?: string): Collection {
-    let items: any[]|Object;
+  pluck(valuesName, keyName) {
+    let items;
 
     if (keyName) {
       items = this._items.reduce((newCollection, item) => Object.assign({}, newCollection, {
@@ -360,10 +343,8 @@ export class Collection {
    * @param value
    * @returns {boolean}
    */
-  contains(predicate: string, value: any): boolean;
-  contains(predicate: ArrayCallback<boolean>, value: any): boolean;
-  contains(predicate: any, value?: any): boolean {
-    let items = <any[]>this.getAll();
+  contains(predicate, value) {
+    let items = this.getAll();
 
     if (value === undefined) {
       value = predicate;
@@ -371,19 +352,19 @@ export class Collection {
     }
 
     if (typeof predicate === 'string') {
-      items = <any[]>this.pluck(predicate).getAll();
+      items = this.pluck(predicate).getAll();
     } else if (isObject(this._items)) {
-      items = <any[]>this.values().getAll();
+      items = this.values().getAll();
     }
 
     if (typeof predicate !== 'function') {
-      predicate = (currentValue: any): boolean => currentValue === value;
+      predicate = (currentValue) => currentValue === value;
     }
 
     return items.some(predicate);
   }
 
-  count(): number {
+  count() {
     return this._items.length;
   }
 
@@ -400,7 +381,7 @@ export class Collection {
    * @param keys
    * @returns {Collection}
    */
-  except(keys: string[]): Collection {
+  except(keys) {
     const newCollection = {};
     this.keys()
       .reject(name => keys.indexOf(name) >= 0)
@@ -431,7 +412,7 @@ export class Collection {
    * @param callback
    * @returns {Collection}
    */
-  flatMap(callback: ArrayCallback<any>): Collection {
+  flatMap(callback) {
     return this.map(callback).collapse();
   }
 
@@ -474,11 +455,11 @@ export class Collection {
    * @param key
    * @returns {Collection}
    */
-  groupBy(key: string|ArrayCallback<string>): Collection {
-    let keyFactory: ArrayCallback<string>;
+  groupBy(key) {
+    let keyFactory;
 
     if (typeof key === 'function') {
-      keyFactory = <ArrayCallback<string>>key;
+      keyFactory = key;
     } else {
       keyFactory = current => current[key];
     }
@@ -505,7 +486,7 @@ export class Collection {
    *
    * @param key
    */
-  has(key: string): boolean {
+  has(key) {
     return key in this._items;
   }
 
@@ -535,7 +516,7 @@ export class Collection {
    * @param glue
    * @returns {string}
    */
-  implode(key: string, glue?: string): string {
+  implode(key, glue) {
     if (!glue) {
       glue = key;
       key = null;
@@ -543,7 +524,7 @@ export class Collection {
 
     const values = key ? this.pluck(key) : this;
 
-    return (<any[]>values.getAll()).join(glue);
+    return values.getAll().join(glue);
   }
 
   /**
@@ -577,11 +558,11 @@ export class Collection {
    * @param key
    * @returns {Collection}
    */
-  keyBy(key: string|ArrayCallback<string>): Collection {
-    let keyFactory: ArrayCallback<string>;
+  keyBy(key) {
+    let keyFactory;
 
     if (typeof key === 'function') {
-      keyFactory = <ArrayCallback<string>>key;
+      keyFactory = key;
     } else {
       keyFactory = current => current[key];
     }
@@ -603,8 +584,8 @@ export class Collection {
    * @param value
    * @returns {Collection}
    */
-  prepend(value: any): Collection {
-    const items = <any[]>this.items;
+  prepend(value) {
+    const items = this.items;
     items.unshift(value);
 
     return new Collection(items);
@@ -633,8 +614,8 @@ export class Collection {
    * @param carry
    * @returns {any}
    */
-  reduce(callback: ReduceCallback, carry: any = null): any {
-    const items = <any[]>this.items;
+  reduce(callback, carry = null) {
+    const items = this.items;
     return items.reduce(callback, carry);
   }
 
@@ -657,8 +638,8 @@ export class Collection {
    * @param compareFunction
    * @returns {Collection}
    */
-  sort(compareFunction?: (a: any, b: any) => number): Collection {
-    const items = (<any[]>this.items).sort(compareFunction);
+  sort(compareFunction) {
+    const items = this.items.sort(compareFunction);
     return new Collection(items);
   }
 
@@ -683,7 +664,7 @@ export class Collection {
    * @param key
    * @returns {Collection}
    */
-  sortBy(key: string): Collection {
+  sortBy(key) {
     return this.sort((a, b) => a[key] - b[key]);
   }
 
@@ -710,13 +691,13 @@ export class Collection {
    * @param key
    * @returns {number}
    */
-  sum(key?: string): number {
-    let items: any[];
+  sum(key) {
+    let items;
 
     if (key) {
-      items = <any[]>this.pluck(key).getAll();
+      items = this.pluck(key).getAll();
     } else {
-      items = <any[]>this.items;
+      items = this.items;
     }
 
     return items.reduce((sum, current) => sum + current, 0);
@@ -732,15 +713,9 @@ export class Collection {
    *
    * @returns {Collection}
    */
-  reverse(): Collection {
-    const items = <any[]>this.items;
-    const indexes: number[] = [];
-
-    for (let i = items.length - 1; i >= 0; i--) {
-      indexes.push(i);
-    }
-
-    return new Collection(indexes.map(i => items[i]));
+  reverse() {
+    const items = Array.from(this.items).reverse();
+    return new Collection(items);
   }
 
   /**
@@ -785,17 +760,17 @@ export class Collection {
    * @param key
    * @returns {Collection}
    */
-  unique(key?: string|UniqueCallback): Collection {
-    let uniqueKey: UniqueCallback = (value: any): any => value;
+  unique(key) {
+    let uniqueKey = value => value;
 
     if (typeof key === 'string') {
-      uniqueKey = (value: Object): any => value[key];
+      uniqueKey = value => value[key];
     } else if (typeof key === 'function') {
       uniqueKey = key;
     }
 
-    const items: any[] = (<any[]>this.items).reduce((items: any[], value: any) => {
-      const key: any = uniqueKey(value);
+    const items = this.items.reduce((items, value) => {
+      const key = uniqueKey(value);
 
       if (!items.some(item => item.key === key)) {
         items.push({key, value});
@@ -831,7 +806,7 @@ export class Collection {
    * @param value
    * @returns {Collection}
    */
-  where(key: string, value: any): Collection {
+  where(key, value) {
     return this.whereIn(key, [value]);
   }
 
@@ -860,7 +835,7 @@ export class Collection {
    * @param values
    * @returns {Collection}
    */
-  whereIn(key: string, values: any[]): Collection {
+  whereIn(key, values) {
     return this.filter(item => values.indexOf(item[key]) >= 0);
   }
 
@@ -876,7 +851,7 @@ export class Collection {
    *
    * @param items
    */
-  zip(...items: any[]): Collection {
+  zip(...items) {
     const arrayableItems = items.map(toArray);
     const zipped = this.reduce((zippedItems, currentItem, index) => {
       const value = arrayableItems.map(item => item[index]);
@@ -888,8 +863,8 @@ export class Collection {
     return new Collection(zipped);
   }
 
-  static macro(name: string, callback: (...args: any[]) => any): void {
-    Collection.prototype[name] = function (...args: any[]): any {
+  static macro(name, callback) {
+    Collection.prototype[name] = function (...args) {
       const result = callback.call(this, ...args);
 
       try {
