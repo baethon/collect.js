@@ -51,10 +51,10 @@ describe('Collection', () => {
 
   it('returns copy of items', () => {
     let collection = collect(['foo']);
-    assert.notStrictEqual(collection.getAll(), collection._items);
+    assert.notStrictEqual(collection.getAll(), collection.items);
     
     collection = collect({name: 'Jon'});
-    assert.notStrictEqual(collection.getAll(), collection._items);
+    assert.notStrictEqual(collection.getAll(), collection.items);
     assertCollectionItems(collection, {name: 'Jon'});
   });
 

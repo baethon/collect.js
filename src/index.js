@@ -16,7 +16,7 @@ export function collect(items) {
 
 const isArrayable = value => value instanceof Collection || Array.isArray(value);
 
-const toArray = value => value instanceof Collection ? value.getAll() : Array.from(value);
+const toArray = value => (value instanceof Collection ? value.getAll() : Array.from(value));
 
 const isObject = value => Object.prototype.toString.call(value) === '[object Object]';
 
@@ -28,28 +28,20 @@ export class Collection {
       throw new Error('Passed items are not valid array');
     }
 
-    if (arrayable) {
-      items = toArray(items);
-    }
-
-    this._items = items;
+    this.items = arrayable ? toArray(items) : items;
   }
 
-	/**
+  /**
    * Returns array/object stored inside Collection instance
    *
    * @returns {any}
    */
   getAll() {
-    if (Array.isArray(this._items)) {
-      return this._items.slice();
+    if (Array.isArray(this.items)) {
+      return this.items.slice();
     }
 
-    return Object.assign({}, this._items);
-  }
-
-  get items() {
-    return this.getAll();
+    return Object.assign({}, this.items);
   }
 
   /**
@@ -58,7 +50,7 @@ export class Collection {
    * @returns {Collection}
    */
   keys() {
-    return new Collection(Object.keys(this._items));
+    return new Collection(Object.keys(this.items));
   }
 
   /**
@@ -75,15 +67,15 @@ export class Collection {
    * @returns {Collection}
    */
   values() {
-    if (Array.isArray(this._items)) {
-      return new Collection(this._items);
+    if (Array.isArray(this.items)) {
+      return new Collection(this.items);
     }
 
-    const values = Object.keys(this._items).map(key => this._items[key]);
+    const values = Object.keys(this.items).map(key => this.items[key]);
     return new Collection(values);
   }
 
-	/**
+  /**
    * Merges the given array into the collection:
    *
    * ```js
@@ -95,10 +87,10 @@ export class Collection {
    * @returns {Collection}
    */
   merge(items) {
-    return new Collection(this._items.concat(toArray(items)));
+    return new Collection(this.items.concat(toArray(items)));
   }
 
-	/**
+  /**
    * Iterates over the items in the collection and passes each item to a given callback:
    *
    * ```js
@@ -110,12 +102,12 @@ export class Collection {
    * @returns {Collection}
    */
   forEach(callback) {
-    Array.prototype.forEach.call(this._items.slice(), callback);
+    Array.prototype.forEach.call(this.items.slice(), callback);
 
     return this;
   }
 
-	/**
+  /**
    * Puts given values at the end of array
    *
    * ```js
@@ -127,10 +119,10 @@ export class Collection {
    * @returns {Collection}
    */
   push(...values) {
-    return new Collection(this._items.concat(values));
+    return new Collection(this.items.concat(values));
   }
 
-	/**
+  /**
    * Iterates through the collection and passes each value to the given callback.
    * The callback is free to modify the item and return it,
    * thus forming a new collection of modified items:
@@ -144,10 +136,10 @@ export class Collection {
    * @returns {Collection}
    */
   map(callback) {
-    return new Collection(this.items.map(callback));
+    return new Collection(this.getAll().map(callback));
   }
 
-	/**
+  /**
    * Returns collections of items matching given predicate:
    *
    * ```js
@@ -159,10 +151,10 @@ export class Collection {
    * @returns {Collection}
    */
   filter(predicate) {
-    return new Collection(this.items.filter(predicate));
+    return new Collection(this.getAll().filter(predicate));
   }
 
-	/**
+  /**
    * Returns collection of items not matching given predicate:
    *
    * ```js
@@ -180,7 +172,7 @@ export class Collection {
   }
 
   ifEmpty(callback) {
-    if (this._items.length) {
+    if (this.items.length) {
       return this;
     }
 
@@ -195,7 +187,7 @@ export class Collection {
 
   slice(start, size) {
     const end = (size === undefined) ? undefined : start + size;
-    const newItems = Array.prototype.slice.call(this._items, start, end);
+    const newItems = this.items.slice(start, end);
     return new Collection(newItems);
   }
 
@@ -230,8 +222,7 @@ export class Collection {
       items = items.map(item => item[keyName]);
     }
 
-    const sum = items.reduce((sum, current) => sum + current, 0);
-    return sum / items.length;
+    return items.reduce((sum, current) => sum + current, 0) / items.length;
   }
 
   /**
@@ -263,7 +254,7 @@ export class Collection {
   combine(values) {
     values = toArray(values);
 
-    const combined = this._items.reduce((combined, keyName, index) => Object.assign(combined, {
+    const combined = this.items.reduce((prev, keyName, index) => Object.assign({}, prev, {
       [keyName]: values[index],
     }), {});
 
@@ -293,11 +284,11 @@ export class Collection {
     let items;
 
     if (keyName) {
-      items = this._items.reduce((newCollection, item) => Object.assign({}, newCollection, {
+      items = this.items.reduce((newCollection, item) => Object.assign({}, newCollection, {
         [item[keyName]]: item[valuesName],
       }), {});
     } else {
-      items = this._items.map(item => item[valuesName]);
+      items = this.items.map(item => item[valuesName]);
     }
 
     return new Collection(items);
@@ -350,19 +341,19 @@ export class Collection {
 
     if (typeof predicate === 'string') {
       items = this.pluck(predicate).getAll();
-    } else if (isObject(this._items)) {
+    } else if (isObject(this.items)) {
       items = this.values().getAll();
     }
 
     if (typeof predicate !== 'function') {
-      predicate = (currentValue) => currentValue === value;
+      predicate = currentValue => currentValue === value;
     }
 
     return items.some(predicate);
   }
 
   count() {
-    return this._items.length;
+    return this.items.length;
   }
 
   /**
@@ -383,7 +374,7 @@ export class Collection {
     this.keys()
       .reject(name => keys.indexOf(name) >= 0)
       .forEach(name => Object.assign(newCollection, {
-        [name]: this._items[name],
+        [name]: this.items[name],
       }));
 
     return new Collection(newCollection);
@@ -461,11 +452,11 @@ export class Collection {
       keyFactory = current => current[key];
     }
 
-    const newCollection = this._items.reduce((newCollection, current, index, array) => {
+    const newCollection = this.items.reduce((items, current, index, array) => {
       const key = keyFactory(current, index, array);
-      const values = newCollection[key] || [];
+      const values = items[key] || [];
 
-      return Object.assign({}, newCollection, {
+      return Object.assign({}, items, {
         [key]: values.concat(current),
       });
     }, {});
@@ -484,7 +475,7 @@ export class Collection {
    * @param key
    */
   has(key) {
-    return key in this._items;
+    return key in this.items;
   }
 
   /**
@@ -564,7 +555,7 @@ export class Collection {
       keyFactory = current => current[key];
     }
 
-    const newCollection = this._items.reduce((newCollection, current, index, array) => {
+    const newCollection = this.items.reduce((newCollection, current, index, array) => {
       const key = keyFactory(current, index, array);
 
       return Object.assign({}, newCollection, {
@@ -582,7 +573,7 @@ export class Collection {
    * @returns {Collection}
    */
   prepend(value) {
-    const items = this.items;
+    const items = this.getAll();
     items.unshift(value);
 
     return new Collection(items);
@@ -612,7 +603,7 @@ export class Collection {
    * @returns {any}
    */
   reduce(callback, carry = null) {
-    const items = this.items;
+    const items = this.getAll();
     return items.reduce(callback, carry);
   }
 
@@ -636,7 +627,7 @@ export class Collection {
    * @returns {Collection}
    */
   sort(compareFunction) {
-    const items = this.items.sort(compareFunction);
+    const items = this.getAll().sort(compareFunction);
     return new Collection(items);
   }
 
@@ -694,7 +685,7 @@ export class Collection {
     if (key) {
       items = this.pluck(key).getAll();
     } else {
-      items = this.items;
+      items = this.getAll();
     }
 
     return items.reduce((sum, current) => sum + current, 0);
@@ -711,7 +702,7 @@ export class Collection {
    * @returns {Collection}
    */
   reverse() {
-    const items = Array.from(this.items).reverse();
+    const items = Array.from(this.getAll()).reverse();
     return new Collection(items);
   }
 
@@ -766,17 +757,17 @@ export class Collection {
       uniqueKey = key;
     }
 
-    const items = this.items.reduce((items, value) => {
+    const items = this.getAll().reduce((items, value) => {
       const key = uniqueKey(value);
 
       if (!items.some(item => item.key === key)) {
-        items.push({key, value});
+        items.push({ key, value });
       }
 
       return items;
     }, []);
 
-    return new Collection(items.map(({value}) => value));
+    return new Collection(items.map(({ value }) => value));
   }
 
   /**
@@ -861,7 +852,7 @@ export class Collection {
   }
 
   static macro(name, callback) {
-    Collection.prototype[name] = function (...args) {
+    Collection.prototype[name] = function macroWrapper(...args) {
       const result = callback.call(this, ...args);
 
       try {
