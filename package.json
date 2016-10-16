@@ -27,20 +27,13 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-register": "^6.9.0",
     "jsdox": "^0.4.10",
-    "mocha": "2.3.3",
-    "tslint": "3.6.0",
-    "typescript": "1.8.9",
-    "typings": "^1.3.1"
+    "mocha": "2.3.3"
   },
   "scripts": {
-    "install": "typings install",
-    "lint": "tslint -c tslint.json src/*.ts",
     "prelib": "rm -rf lib && mkdir lib",
-    "lib": "tsc",
-    "predocs": "npm run lib",
-    "docs": "jsdox -t build/templates -o build lib/index.js && cat build/{README,index}.md > README.md",
+    "docs": "jsdox -t build/templates -o build src/index.js && cat build/{README,index}.md > README.md",
     "mocha": "mocha --compilers js:babel-register test",
-    "test": "npm run lint && npm run mocha",
+    "test": "npm run mocha",
     "version-patch": "npm version patch --message 'Version bump: %s'",
     "version-minor": "npm version minor --message 'Version bump: %s'",
     "version-major": "npm version major --message 'Version bump: %s'",
