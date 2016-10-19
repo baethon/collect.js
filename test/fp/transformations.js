@@ -1,40 +1,55 @@
 import {describe, it} from 'mocha';
 import assert from 'assert';
+import * as R from 'ramda';
 import * as transformations from '../../src/fp/transformations';
 import suites from '../suites/transformations';
 
-const runTestSuite = name => callback => {
+const argsLength = length => R.pipe(
+  R.prop('args'),
+  R.length,
+  R.equals(length)
+);
+
+const suiteWithArgsLength = (name, length) =>
+  suites[name].filter(argsLength(length));
+
+const testSuite = R.curry((name, callback) => {
+  const testCases = suites[name];
+  runTestSuite(name, testCases, callback);
+});
+
+const runTestSuite = R.curry((name, testCases, callback) => {
   describe(`${name} test suite`, () => {
-    suites[name].forEach((item, index) => {
+    testCases.forEach((item, index) => {
       it(`test suite #${index + 1}`, () => callback(item));
     });
   });
-};
+});
 
 const toArray = items => items.getAll ? items.getAll() : items;
 
 describe('transformation functions', () => {
-  runTestSuite('collapse')(suite => {
+  testSuite('collapse')(suite => {
     const items = suite.collection.getAll();
     const actual = transformations.collapse(items);
     assert.deepEqual(actual, suite.expected);
   });
 
-  runTestSuite('combine')(suite => {
+  testSuite('combine')(suite => {
     const keys = suite.collection.getAll();
     const values = toArray(suite.args[0]);
     const combiner = transformations.combine(keys);
     assert.deepEqual(combiner(values), suite.expected);
   });
 
-  runTestSuite('pluck')(suite => {
+  testSuite('pluck')(suite => {
     const items = suite.collection.getAll();
     const pluckBy = transformations.pluck(...suite.args);
 
     assert.deepEqual(pluckBy(items), suite.expected);
   });
 
-  runTestSuite('except')(suite => {
+  testSuite('except')(suite => {
     const items = suite.collection.getAll();
     const [exceptKeys] = suite.args;
     const except = transformations.except(exceptKeys);
@@ -42,7 +57,7 @@ describe('transformation functions', () => {
     assert.deepEqual(except(items), suite.expected);
   });
 
-  runTestSuite('flatMap')(suite => {
+  testSuite('flatMap')(suite => {
     const items = suite.collection.getAll();
     const [reducerFn] = suite.args;
     const mapper = transformations.flatMap(reducerFn);
@@ -50,7 +65,7 @@ describe('transformation functions', () => {
     assert.deepEqual(mapper(items), suite.expected);
   });
 
-  runTestSuite('groupBy')(suite => {
+  testSuite('groupBy')(suite => {
     const items = suite.collection.getAll();
     const [groupByKey] = suite.args;
     const reducer = transformations.groupBy(groupByKey);
@@ -58,14 +73,23 @@ describe('transformation functions', () => {
     assert.deepEqual(reducer(items), suite.expected);
   });
 
-  runTestSuite('implode')(suite => {
+  runTestSuite('implode', suiteWithArgsLength('implode', 1))(suite => {
     const items = suite.collection.getAll();
-    const reducer = transformations.implode(...suite.args);
+    const [glue] = suite.args;
+    const reducer = transformations.implode(glue);
+
+    assert.deepEqual(reducer(items), suite.expected);
+  })
+
+  runTestSuite('implodeByKey', suiteWithArgsLength('implode', 2))(suite => {
+    const items = suite.collection.getAll();
+    const [key, glue] = suite.args;
+    const reducer = transformations.implodeByKey(key, glue);
 
     assert.deepEqual(reducer(items), suite.expected);
   });
 
-  runTestSuite('keyBy')(suite => {
+  testSuite('keyBy')(suite => {
     const items = suite.collection.getAll();
     const [key] = suite.args;
     const reducer = transformations.keyBy(key);
@@ -73,7 +97,7 @@ describe('transformation functions', () => {
     assert.deepEqual(reducer(items), suite.expected);
   });
 
-  runTestSuite('prepend')(suite => {
+  testSuite('prepend')(suite => {
     const items = suite.collection.getAll();
     const [value] = suite.args;
     const prepend = transformations.prepend(value);
@@ -81,7 +105,7 @@ describe('transformation functions', () => {
     assert.deepEqual(prepend(items), suite.expected);
   });
 
-  runTestSuite('sort')(suite => {
+  testSuite('sort')(suite => {
     const items = suite.collection.getAll();
     const comparator = suite.args && suite.args[0];
     const sort = transformations.sort(comparator);
@@ -89,7 +113,7 @@ describe('transformation functions', () => {
     assert.deepEqual(sort(items), suite.expected);
   });
 
-  runTestSuite('sortBy')(suite => {
+  testSuite('sortBy')(suite => {
     const items = suite.collection.getAll();
     const [key] = suite.args;
     const sort = transformations.sortBy(key);
@@ -97,13 +121,13 @@ describe('transformation functions', () => {
     assert.deepEqual(sort(items), suite.expected);
   });
 
-  runTestSuite('reverse')(suite => {
+  testSuite('reverse')(suite => {
     const items = suite.collection.getAll();
 
     assert.deepEqual(transformations.reverse(items), suite.expected);
   });
 
-  runTestSuite('unique')(suite => {
+  testSuite('unique')(suite => {
     const items = suite.collection.getAll();
     const args = suite.args || [];
     const unique = transformations.unique(...args);

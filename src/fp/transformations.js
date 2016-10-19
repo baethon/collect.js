@@ -39,15 +39,12 @@ export const groupBy = R.curry((key, items) => R.groupBy(
   items
 ));
 
-const implodeByKey = (key, glue) => R.pipe(
+export const implodeByKey = R.curry((key, glue, items) => R.pipe(
   R.map(R.prop(key)),
   R.join(glue)
-);
+)(items));
 
-export const implode = (key, glue) => R.cond([
-  [R.always(!!glue), implodeByKey(key, glue)],
-  [R.T, R.join(key)],
-]);
+export const implode = R.join;
 
 export const keyBy = R.curry((key, items) => R.reduceBy(
   (prev, current) => current,
