@@ -134,4 +134,12 @@ describe('transformation functions', () => {
 
     assert.deepEqual(unique(items), suite.expected);
   });
+
+  testSuite('where')(suite => {
+    const items = suite.collection.getAll();
+    const [key, value] = suite.args;
+    const where = transformations.where(key, value);
+
+    assert.deepEqual(where(items), suite.expected);
+  });
 });

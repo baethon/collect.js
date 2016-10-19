@@ -64,3 +64,8 @@ export const sortBy = R.curry(
 export const reverse = R.reverse;
 
 export const unique = key => (key ? R.uniqBy(keyToFn(key)) : R.uniq);
+
+export const where = R.curry((key, value, items) => R.filter(
+  R.propEq(key, value),
+  items
+));
