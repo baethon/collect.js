@@ -142,4 +142,20 @@ describe('transformation functions', () => {
 
     assert.deepEqual(where(items), suite.expected);
   });
+
+  testSuite('whereIn')(suite => {
+    const items = suite.collection.getAll();
+    const [key, values] = suite.args;
+    const where = transformations.whereIn(key, values);
+
+    assert.deepEqual(where(items), suite.expected);
+  });
+
+  testSuite('zip')(suite => {
+    const items = suite.collection.getAll();
+    const [zipWith] = suite.args;
+    const zip = transformations.zip(toArray(zipWith));
+
+    assert.deepEqual(zip(items), suite.expected);
+  });
 });

@@ -69,3 +69,13 @@ export const where = R.curry((key, value, items) => R.filter(
   R.propEq(key, value),
   items
 ));
+
+export const whereIn = R.curry((key, values, items) => R.filter(
+  R.pipe(
+    R.prop(key),
+    R.flip(R.contains)(values)
+  ),
+  items
+));
+
+export const zip = R.flip(R.zip);
