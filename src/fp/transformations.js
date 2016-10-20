@@ -4,15 +4,12 @@ export const collapse = R.flatten;
 
 export const combine = R.zipObj;
 
-const pluckAndCombine = (valuesNames, keyName) => R.pipe(
+export const pluckAndCombine = R.curry((valuesNames, keyName, items) => R.pipe(
   R.juxt([R.pluck(keyName), R.pluck(valuesNames)]),
   R.apply(combine)
-);
+)(items));
 
-export const pluck = (valuesName, keyName) => R.cond([
-  [R.always(!!keyName), pluckAndCombine(valuesName, keyName)],
-  [R.T, R.pluck(valuesName)],
-]);
+export const pluck = R.pluck;
 
 export const except = R.curry((exceptKeys, items) => R.pipe(
   R.keys,
@@ -63,7 +60,9 @@ export const sortBy = R.curry(
 
 export const reverse = R.reverse;
 
-export const unique = key => (key ? R.uniqBy(keyToFn(key)) : R.uniq);
+export const uniqueByKey = R.curry((key, items) => R.uniqBy(keyToFn(key))(items));
+
+export const unique = R.uniq;
 
 export const where = R.curry((key, value, items) => R.filter(
   R.propEq(key, value),

@@ -42,9 +42,18 @@ describe('transformation functions', () => {
     assert.deepEqual(combiner(values), suite.expected);
   });
 
-  testSuite('pluck')(suite => {
+  runTestSuite('pluck', suiteWithArgsLength('pluck', 1))(suite => {
     const items = suite.collection.getAll();
-    const pluckBy = transformations.pluck(...suite.args);
+    const [valueKeyName] = suite.args;
+    const pluckBy = transformations.pluck(valueKeyName);
+
+    assert.deepEqual(pluckBy(items), suite.expected);
+  });
+
+  runTestSuite('pluckAndCombine', suiteWithArgsLength('pluck', 2))(suite => {
+    const items = suite.collection.getAll();
+    const [valuesKeyName, keysKeyName] = suite.args;
+    const pluckBy = transformations.pluckAndCombine(valuesKeyName, keysKeyName);
 
     assert.deepEqual(pluckBy(items), suite.expected);
   });
@@ -127,10 +136,17 @@ describe('transformation functions', () => {
     assert.deepEqual(transformations.reverse(items), suite.expected);
   });
 
-  testSuite('unique')(suite => {
+  runTestSuite('unique', suiteWithArgsLength('unique', 0))(suite => {
     const items = suite.collection.getAll();
-    const args = suite.args || [];
-    const unique = transformations.unique(...args);
+    const unique = transformations.unique;
+
+    assert.deepEqual(unique(items), suite.expected);
+  });
+
+  runTestSuite('uniqueByKey', suiteWithArgsLength('unique', 1))(suite => {
+    const items = suite.collection.getAll();
+    const [key] = suite.args;
+    const unique = transformations.uniqueByKey(key);
 
     assert.deepEqual(unique(items), suite.expected);
   });

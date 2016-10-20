@@ -127,7 +127,7 @@ export default {
     {collection: collect([1, 2, 3]), expected: [3, 2, 1]},
   ],
   unique: [
-    {collection: collect([2, 1, 1, 2, 2, 3, 4, 2]), expected: [2, 1, 3, 4]},
+    {collection: collect([2, 1, 1, 2, 2, 3, 4, 2]), args: [], expected: [2, 1, 3, 4]},
     {
       collection: collect([
         {name: 'iPhone 6', brand: 'Apple', type: 'phone'},
