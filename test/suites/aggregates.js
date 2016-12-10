@@ -13,7 +13,7 @@ export default {
     {collection: collect([{name: 'Jon'}]), args: ['name', 'Arya'], expected: false},
     {collection: collect([{name: 'Jon'}]), args: ['name', 'Jon'], expected: true},
     {collection: collect({name: 'Jon'}), args: ['Jon'], expected: true},
-    {collection, args: [value => value === 1], expected: false},
+    {collection, args: [value => value === 1], expected: true},
   ],
   count: [
     {collection, expected: 3},
