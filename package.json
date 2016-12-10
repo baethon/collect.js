@@ -42,6 +42,7 @@
     "docs": "build/docs.sh",
     "test": "npm run eslint && npm run mocha",
     "eslint": "eslint src",
+    "preversion": "npm run lib",
     "version-patch": "npm version patch --message 'Version bump: %s'",
     "version-minor": "npm version minor --message 'Version bump: %s'",
     "version-major": "npm version major --message 'Version bump: %s'",
