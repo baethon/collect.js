@@ -1,6 +1,6 @@
 {
   "name": "@baethon/collect",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Laravel inspired library for handling collections",
   "main": "lib/index.js",
   "keywords": [
@@ -36,13 +36,13 @@
   },
   "scripts": {
     "prelib": "rm -rf lib && mkdir lib",
-    "premocha": "npm run lib",
     "mocha": "mocha --compilers js:babel-register test/**",
     "lib": "babel src/index.js --out-file lib/index.js",
     "predocs": "jsdox -t build/templates -o build src/index.js",
     "docs": "build/docs.sh",
     "test": "npm run eslint && npm run mocha",
     "eslint": "eslint src",
+    "preversion": "npm run lib",
     "version-patch": "npm version patch --message 'Version bump: %s'",
     "version-minor": "npm version minor --message 'Version bump: %s'",
     "version-major": "npm version major --message 'Version bump: %s'",

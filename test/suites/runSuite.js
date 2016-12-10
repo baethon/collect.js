@@ -1,6 +1,6 @@
 import {describe, it} from 'mocha';
 import assert from 'assert';
-import {Collection} from '../../lib';
+import {Collection} from '../../src';
 
 const isObject = value => Object.prototype.toString.call(value) === '[object Object]';
 

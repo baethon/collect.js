@@ -332,9 +332,9 @@ export class Collection {
    * @returns {boolean}
    */
   contains(predicate, value) {
-    let items = this.getAll();
+    let items;
 
-    if (value === undefined) {
+    if (value === undefined && typeof predicate !== 'function') {
       value = predicate;
       predicate = undefined;
     }
@@ -343,6 +343,8 @@ export class Collection {
       items = this.pluck(predicate).getAll();
     } else if (isObject(this.items)) {
       items = this.values().getAll();
+    } else {
+      items = this.getAll();
     }
 
     if (typeof predicate !== 'function') {
