@@ -1,4 +1,4 @@
-import {collect} from '../../lib';
+import {collect} from '../../src';
 
 const collection = collect([1, 2, 3]);
 

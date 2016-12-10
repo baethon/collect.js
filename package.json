@@ -36,7 +36,6 @@
   },
   "scripts": {
     "prelib": "rm -rf lib && mkdir lib",
-    "premocha": "npm run lib",
     "mocha": "mocha --compilers js:babel-register test",
     "lib": "babel src/index.js --out-file lib/index.js",
     "predocs": "jsdox -t build/templates -o build src/index.js",
