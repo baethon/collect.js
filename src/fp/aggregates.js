@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 
-export { 
+export {
   any,
   has,
   sum,

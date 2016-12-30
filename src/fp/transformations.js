@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 
-export { 
+export {
   flatten as collapse,
   zipObj as combine,
   pluck,
