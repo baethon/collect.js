@@ -1,5 +1,7 @@
 import * as R from 'ramda';
 
+export { any, has, sum } from 'ramda';
+
 export const avg = list => R.pipe(
   R.sum,
   R.divide(R.__, list.length)
@@ -22,13 +24,7 @@ export const containsValueByKey = R.curry(
   )(list)
 );
 
-export const any = R.any;
-
 export const count = R.length;
-
-export const has = R.has;
-
-export const sum = R.sum;
 
 export const sumByKey = R.curry(
   (key, list) => R.pipe(R.pluck(key), R.sum)(list)
