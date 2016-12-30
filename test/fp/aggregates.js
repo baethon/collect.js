@@ -102,4 +102,19 @@ describe('aggregates functions', () => {
 
     assert.equal(has(items), suite.expected);
   });
+
+  describe('sum', () => {
+    runTestCase('sum', getTestCaseWithArgsLength('sum', 0), suite => {
+      const items = suite.collection.getAll();
+      assert.equal(aggregates.sum(items), suite.expected);
+    });
+
+    runTestCase('sumByKey', getTestCaseWithArgsLength('sum', 1), suite => {
+      const items = suite.collection.getAll();
+      const [key] = suite.args;
+      const sumByKey = aggregates.sumByKey(key);
+
+      assert.equal(sumByKey(items), suite.expected);
+    });
+  });
 });

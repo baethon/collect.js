@@ -23,7 +23,7 @@ export default {
     {collection: collect({name: 'Jon'}), args: ['lastname'], expected: false},
   ],
   sum: [
-    {collection, expected: 6},
+    {collection, expected: 6, args: []},
     {
       collection: collect([
         {name: 'Desk', price: 200},

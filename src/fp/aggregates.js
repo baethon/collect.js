@@ -27,3 +27,9 @@ export const any = R.any;
 export const count = R.length;
 
 export const has = R.has;
+
+export const sum = R.sum;
+
+export const sumByKey = R.curry(
+  (key, list) => R.pipe(R.pluck(key), R.sum)(list)
+);
