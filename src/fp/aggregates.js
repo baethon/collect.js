@@ -1,6 +1,12 @@
 import * as R from 'ramda';
 
-export { any, has, sum } from 'ramda';
+export { 
+  any,
+  has,
+  sum,
+  contains as containsValue,
+  length as count,
+} from 'ramda';
 
 export const avg = list => R.pipe(
   R.sum,
@@ -11,20 +17,16 @@ export const avgByKey = R.curry(
   (key, list) => R.compose(avg, R.pluck(key))(list)
 );
 
-export const containsValue = R.contains;
-
 export const objectContainsValue = R.curry(
-  (value, object) => containsValue(value, R.values(object))
+  (value, object) => R.contains(value, R.values(object))
 );
 
 export const containsValueByKey = R.curry(
   (key, value, list) => R.pipe(
     R.pluck(key),
-    containsValue(value)
+    R.contains(value)
   )(list)
 );
-
-export const count = R.length;
 
 export const sumByKey = R.curry(
   (key, list) => R.pipe(R.pluck(key), R.sum)(list)
