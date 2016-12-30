@@ -88,4 +88,10 @@ describe('aggregates functions', () => {
       assert.equal(suite.expected, any(items));
     });
   });
+
+  runAllTestCases('count', suite => {
+    const items = suite.collection.getAll();
+
+    assert.equal(aggregates.count(items), suite.expected);
+  });
 });

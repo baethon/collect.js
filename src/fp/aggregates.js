@@ -23,3 +23,5 @@ export const containsValueByKey = R.curry(
 );
 
 export const any = R.any;
+
+export const count = R.length;
