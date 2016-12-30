@@ -15,4 +15,11 @@ describe('core functions', () => {
 
     assert.deepEqual(mergeWith(mergeItems), suite.expected);
   });
+
+  runAllTestCases('push', suite => {
+    const collection = suite.collection.getAll();
+    const pushItems = suite.args;
+
+    assert.deepEqual(core.push(collection, ...pushItems), suite.expected);
+  });
 });
