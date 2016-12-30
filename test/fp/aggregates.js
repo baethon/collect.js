@@ -94,4 +94,12 @@ describe('aggregates functions', () => {
 
     assert.equal(aggregates.count(items), suite.expected);
   });
+
+  runAllTestCases('has', suite => {
+    const items = suite.collection.getAll();
+    const [key] = suite.args;
+    const has = aggregates.has(key);
+
+    assert.equal(has(items), suite.expected);
+  });
 });
