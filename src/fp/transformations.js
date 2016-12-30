@@ -1,15 +1,20 @@
 import * as R from 'ramda';
 
-export const collapse = R.flatten;
-
-export const combine = R.zipObj;
+export { 
+  flatten as collapse,
+  zipObj as combine,
+  pluck,
+  join as implode,
+  prepend,
+  sort,
+  reverse,
+  uniq as unique,
+} from 'ramda';
 
 export const pluckAndCombine = R.curry((valuesNames, keyName, items) => R.pipe(
   R.juxt([R.pluck(keyName), R.pluck(valuesNames)]),
-  R.apply(combine)
+  R.apply(R.zipObj)
 )(items));
-
-export const pluck = R.pluck;
 
 export const except = R.curry((exceptKeys, items) => R.pipe(
   R.keys,
@@ -41,8 +46,6 @@ export const implodeByKey = R.curry((key, glue, items) => R.pipe(
   R.join(glue)
 )(items));
 
-export const implode = R.join;
-
 export const keyBy = R.curry((key, items) => R.reduceBy(
   (prev, current) => current,
   {},
@@ -50,19 +53,11 @@ export const keyBy = R.curry((key, items) => R.reduceBy(
   items
 ));
 
-export const prepend = R.prepend;
-
-export const sort = R.sort;
-
 export const sortBy = R.curry(
   (key, items) => R.sortBy(R.prop(key), items)
 );
 
-export const reverse = R.reverse;
-
 export const uniqueByKey = R.curry((key, items) => R.uniqBy(keyToFn(key))(items));
-
-export const unique = R.uniq;
 
 export const where = R.curry((key, value, items) => R.filter(
   R.propEq(key, value),
