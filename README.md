@@ -2,6 +2,10 @@
 
 This package is supposed to be immutable, eventually consistent (let's say heavily inspired) clone of Laravel's support class for [collections](https://laravel.com/docs/master/collections).
 
+## Deprecated
+
+This package is not maintained anymore. I recommend switching to [collect.js](https://github.com/ecrmnn/collect.js).
+
 ## Installation
 
 ```
